@@ -80,7 +80,7 @@ class FabriekSpider(CrawlSpider):
 
 process = CrawlerProcess(settings={
     "FEEDS": {
-        "fabriek.csv": {"format": "csv"},
+        "../../output/fabriek.csv": {"format": "csv"},
     }
 })
 
@@ -89,15 +89,15 @@ process.start() # the script will block here until the crawling is finished
 
 #open and read the file
 
-with open('fabriek.csv') as csv_file:
-    movie_list: List[str]
-    csv_reader = csv.reader(csv_file, delimiter=',')
-    line_count = 0
-    for row in csv_reader:
-        if line_count == 0:
-            print(", ".join(row))
-            line_count += 1
-        else:
+# with open('fabriek.csv') as csv_file:
+#     movie_list: List[str]
+#     csv_reader = csv.reader(csv_file, delimiter=',')
+#     line_count = 0
+#     for row in csv_reader:
+#         if line_count == 0:
+#             print(", ".join(row))
+#             line_count += 1
+#         else:
 
 
 
