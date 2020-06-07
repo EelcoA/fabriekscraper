@@ -2,6 +2,7 @@
 import os
 from typing import Dict, List
 import csv
+import datetime
 import scrapy
 from scrapy.crawler import CrawlerProcess
 from scrapy.linkextractors import LinkExtractor
@@ -81,17 +82,9 @@ class FabriekSpider(CrawlSpider):
 
 
 
-
-def delete_file(file_name):
-    if os.path.exists(file_name):
-        os.remove(file_name)
-
-output_csv_file: str = "../../output/fabriek.csv"
-output_csv_file_sorted: str = "../../output/fabriek-sorted.csv"
-
-delete_file(output_csv_file)
-delete_file(output_csv_file_sorted)
-
+datetime = datetime.datetime.now()
+output_csv_file: str = f"output/fabriek_{datetime:%Y-%m-%d_%H%M%S}.csv"
+output_csv_file_sorted: str = f"output/fabriek_{datetime:%Y-%m-%d_%H%M%S}_sorted.csv"
 
 process = CrawlerProcess(settings={
     "FEEDS": {
@@ -104,9 +97,10 @@ process.start()  # the script will block here until the crawling is finished
 
 # open and read the file
 
+header_row: List[str]
+movie_list: List[List[str]] = []
+
 with open(output_csv_file) as csv_file:
-    header_row: List[str]
-    movie_list: List[List[str]] = []
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
     for row in csv_reader:
@@ -120,5 +114,14 @@ movie_list.sort()
 output_file = open(output_csv_file_sorted, mode="w")
 output_file.write(",".join(header_row) + "\n")
 for row in movie_list:
+    row_nr = 0
+    for field in row:
+        if "," in field:
+            row[row_nr] = f'"{row[row_nr]}"'
+        row_nr += 1
     output_file.write(",".join(row) + "\n")
 output_file.close()
+
+
+def start():
+    return None
