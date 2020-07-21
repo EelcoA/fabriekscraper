@@ -7,7 +7,7 @@ import scrapy
 from scrapy.crawler import CrawlerProcess
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-
+from fabriek.spiders import fabriek_helper as fh
 
 def get_text_from_movie(response, param):
     text = response.xpath("//div[@class='film__content__meta']/p/strong[text()='" + param + "']/../text()").get()
@@ -81,11 +81,14 @@ class FabriekSpider(CrawlSpider):
                }
 
 
+# ----------------------------------------------------------------------------
+# Start here
+# ----------------------------------------------------------------------------
 
 datetime = datetime.datetime.now()
-output_csv_file: str = f"output/fabriek_{datetime:%Y-%m-%d_%H%M%S}.csv"
-output_csv_file_sorted: str = f"output/fabriek_{datetime:%Y-%m-%d_%H%M%S}_sorted.csv"
-
+output_csv_file: str = f"output/fabriek_{datetime:%Y-%m-%d_%H%M%S}_01.csv"
+output_csv_file_sorted: str = f"output/fabriek_{datetime:%Y-%m-%d_%H%M%S}_02_sorted.csv"
+output_csv_file_event_manager: str = f"output/fabriek_{datetime:%Y-%m-%d_%H%M%S}_03_event_manager.csv"
 process = CrawlerProcess(settings={
     "FEEDS": {
         output_csv_file: {"format": "csv"},
@@ -106,9 +109,9 @@ with open(output_csv_file) as csv_file:
     for row in csv_reader:
         if line_count == 0:
             header_row = row
-            line_count += 1
         else:
             movie_list.append(row)
+        line_count += 1
 
 movie_list.sort()
 output_file = open(output_csv_file_sorted, mode="w")
@@ -122,6 +125,24 @@ for row in movie_list:
     output_file.write(",".join(row) + "\n")
 output_file.close()
 
+# write the file for Event Manager
 
-def start():
-    return None
+header_row = ["event_start_date", "event_start_time", "event_end_date", "event_end_time", "event_name", "event_slug",
+              "post_content", "location", "category"]
+output_file = open(output_csv_file_event_manager, mode="w")
+output_file.write(",".join(header_row) + "\n")
+
+with open(output_csv_file_sorted) as input_file:
+    reader = csv.reader(input_file, delimiter=',')
+    line_count = 0
+    for row in reader:
+        if line_count != 0:
+            try:
+                event_row = fh.create_event_row(row)
+                output_file.write(",".join(event_row) + "\n")
+            except ValueError as e:
+                print("Foutieve data van de website gehaald/gekregen, regel " + str(line_count+1) + ", fout= " + e)
+        line_count += 1
+output_file.close()
+
+
