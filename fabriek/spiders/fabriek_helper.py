@@ -243,6 +243,7 @@ def create_event_row(row: List[str]):
 
     event_name = '"' + titel + '"'
     event_slug = to_slug(titel) + "_" + datum + "_" + to_slug(tijd)
+    post_excerpt = synopsis
     post_content = '"' + \
                    ((to_strong(synopsis) + "<br>" + "<br>") if synopsis != "" else "") + \
                    beschrijving + "<br>" + \
@@ -257,7 +258,7 @@ def create_event_row(row: List[str]):
     category = "film"
 
     event_row = [event_start_date, event_start_time, event_end_date, event_end_time,
-                 event_name, event_slug, post_content, location, category]
+                 event_name, event_slug, post_excerpt, post_content, location, category]
 
     return event_row
 
@@ -270,7 +271,7 @@ def create_event_manager_file(input_file: io.IOBase, output_file: io.IOBase):
     """
     header_row = ["event_start_date", "event_start_time", "event_end_date", "event_end_time", "event_name",
                   "event_slug",
-                  "post_content", "location", "category"]
+                  "post_excerpt", "post_content", "location", "category"]
     output_file.write(",".join(header_row) + "\n")
 
     with input_file as input_file:
