@@ -194,6 +194,7 @@ class Test(TestCase):
         expected = ["2020-06-29","20:30:00","2020-06-29","22:12:00",
                     '"Ema, the movie"',
                     "ema-the-movie_2020-06-29_20-30",
+                    "Ema, de nieuwe film van regisseur Pablo Larraín (Jackie).",
                     "\"<strong>Ema, de nieuwe film van regisseur Pablo Larraín (Jackie).</strong><br><br>"
                     "Ema is een explosief, stijlvol en gewaagd portret van een danseres.<br>"
                     "<br>"
