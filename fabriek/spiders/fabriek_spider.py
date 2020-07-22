@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import io
 import os
+from logging import ERROR
 from typing import Dict, List
 import csv
 import datetime
@@ -9,6 +10,7 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from fabriek.spiders import fabriek_helper as fh
+
 
 def get_text_from_movie(response, param):
     text = response.xpath("//div[@class='film__content__meta']/p/strong[text()='" + param + "']/../text()").get()
@@ -21,6 +23,9 @@ class FabriekSpider(CrawlSpider):
     name = 'fabriek'
     allowed_domains = ['www.de-fabriek.nl']
     start_urls = ['https://www.de-fabriek.nl']
+    custom_settings = {
+        'LOG_LEVEL': 'ERROR',
+    }
 
     def parse(self, response):
         day_urls = response.xpath("//a[@class='day-selector__day']/@href").getall()
@@ -33,11 +38,25 @@ class FabriekSpider(CrawlSpider):
 
     def parse_day(self, response, day: str):
         self.logger.debug("PARSE_DAY: " + day)
-        movie_urls: List[str] = response.xpath("//div[@class='main-agenda-movie-info']/h4/a/@href").getall()
+        #
+        # for movie_urls and movie_titles I added [not(@class)] because with 'specials' there were two links and titles
+        # found, but only 1 time and ticket, causing the index to go out of bound.
+        #
+        # to prevent this type of errors unnoticed, I've added a check on the size of all 4 Lists
+        #
+        movie_urls: List[str] = response.xpath(
+            "//div[@class='main-agenda-movie-info']/h4/a[not(@class)]/@href").getall()
         movie_times: List[str] = response.xpath("//div[@class='main-agenda-movie-time']/a/text()").getall()
-        movie_titles: List[str] = response.xpath("//div[@class='main-agenda-movie-info']/h4/a/text()").getall()
+        movie_titles: List[str] = response.xpath(
+            "//div[@class='main-agenda-movie-info']/h4/a[not(@class)]/text()").getall()
         movie_tickets: List[str] = response.xpath("//a[@class='button ticket-button']/@href").getall()
+        if len(movie_urls) == len(movie_times) == len(movie_titles) == len(movie_tickets):
+            pass
+        else:
+            self.logger.error(
+                "Het verwerken van de gegevens van dag " + day + "is niet goed gegaan. Check de films van die dag!")
         i: int = 0
+
         for movie_title in movie_titles:
             yield scrapy.Request(url=self.start_urls[0] + movie_urls[i], callback=self.parse_movie,
                                  priority=10,
@@ -132,4 +151,3 @@ input_file: io.TextIOWrapper = open(output_csv_file_sorted)
 output_file: io.TextIOWrapper = open(output_csv_file_event_manager, mode="w")
 
 fh.create_event_manager_file(input_file=input_file, output_file=output_file)
-
