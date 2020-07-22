@@ -1,3 +1,5 @@
+import csv
+import io
 import re
 import time
 import unicodedata
@@ -131,11 +133,11 @@ def create_date_time(date_string: str, time_string: str) -> dt.datetime:
     :raises ValueError when date_string or time_string don't contain the right values
     """
     if not is_valid_date_string(date_string):
-        raise ValueError("date_string has no correct value (yyyy:mm:dd): " +
-                         "None" if date_string is None else date_string)
+        raise ValueError("\"date_string has no correct value (yyyy:mm:dd): " +
+                         ("None" if date_string is None else date_string) + "\"")
     if not is_valid_time_string(time_string):
-        raise ValueError("time_string has no correct value (hh:mm:ss): " +
-                         "None" if time_string is None else time_string)
+        raise ValueError("\"time_string has no correct value (hh:mm:ss): " +
+                         ("None" if time_string is None else time_string) + "\"")
 
     jjjjmmdd = date_string.split("-")
     jjjj = int(jjjjmmdd[0])
@@ -199,8 +201,8 @@ def get_minutes(speelduur: str) -> int:
     :raise ValueError when speelduur is None or has no valid value
     """
     if not is_valid_speelduur(speelduur):
-        raise ValueError("Speelduur value not valid, must be '99[9] min', but is: " +
-                         speelduur if not speelduur is None else speelduur)
+        raise ValueError("\"Speelduur value not valid, must be '99[9] min', but is: " +
+                         ( "leeg" if speelduur is None else speelduur ) + "\"")
 
     # get speelduur, make sure it is digits
     speelduur_list = speelduur.split(" ")
@@ -225,11 +227,11 @@ def create_event_row(row: List[str]):
     film_url = row[10]
 
     if not is_valid_date_string(datum):
-        raise ValueError("datum bevat geen, of geen geldige waarde: " "Leeg" if datum is None else datum)
+        raise ValueError("\"datum bevat geen of geen geldige waarde: " + ("Leeg" if datum is None else datum) + "\"")
     event_start_date = datum
 
     if not is_valid_begintijd(tijd):
-        raise ValueError("tijd bevat geen, of geen geldige waarde: " "Leeg" if tijd is None else tijd)
+        raise ValueError("\"tijd bevat geen, of geen geldige waarde: " + ( "Leeg" if tijd is None else tijd) + "\"")
     event_start_time = tijd + ":00"
 
     playtime_minutes = get_minutes(speelduur)
@@ -258,3 +260,33 @@ def create_event_row(row: List[str]):
                  event_name, event_slug, post_content, location, category]
 
     return event_row
+
+
+def create_event_manager_file(input_file: io.IOBase, output_file: io.IOBase):
+    """
+
+    :param input_file:
+    :type output_file: object
+    """
+    header_row = ["event_start_date", "event_start_time", "event_end_date", "event_end_time", "event_name",
+                  "event_slug",
+                  "post_content", "location", "category"]
+    output_file.write(",".join(header_row) + "\n")
+
+    with input_file as input_file:
+        reader = csv.reader(input_file, delimiter=',')
+        line_count = 0
+        for row in reader:
+            if line_count != 0:
+                try:
+                    event_row = create_event_row(row)
+                    output_file.write(",".join(event_row) + "\n")
+                except ValueError as e:
+                    msg = "Foutieve data van de website, regel " + str(line_count) + ", fout= " + str(e)
+                    #
+                    print(msg)
+                    output_file.write(msg + "\n")
+            line_count += 1
+    output_file.close()
+
+    return None

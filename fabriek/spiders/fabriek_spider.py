@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import io
 import os
 from typing import Dict, List
 import csv
@@ -127,22 +128,8 @@ output_file.close()
 
 # write the file for Event Manager
 
-header_row = ["event_start_date", "event_start_time", "event_end_date", "event_end_time", "event_name", "event_slug",
-              "post_content", "location", "category"]
-output_file = open(output_csv_file_event_manager, mode="w")
-output_file.write(",".join(header_row) + "\n")
+input_file: io.TextIOWrapper = open(output_csv_file_sorted)
+output_file: io.TextIOWrapper = open(output_csv_file_event_manager, mode="w")
 
-with open(output_csv_file_sorted) as input_file:
-    reader = csv.reader(input_file, delimiter=',')
-    line_count = 0
-    for row in reader:
-        if line_count != 0:
-            try:
-                event_row = fh.create_event_row(row)
-                output_file.write(",".join(event_row) + "\n")
-            except ValueError as e:
-                print("Foutieve data van de website gehaald/gekregen, regel " + str(line_count+1) + ", fout= " + e)
-        line_count += 1
-output_file.close()
-
+fh.create_event_manager_file(input_file=input_file, output_file=output_file)
 

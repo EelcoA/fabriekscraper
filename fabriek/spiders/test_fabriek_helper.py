@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from typing import Dict, List
 from unittest import TestCase
@@ -206,30 +207,30 @@ class Test(TestCase):
         result = fh.create_event_row(row)
         self.assertEqual(result, expected)
 
-    # def test_create_event_row_full_no_synopsis(self):
-    #     row: List[str] = ["2020-06-29",
-    #                       "20:30",
-    #                       "Ema",
-    #                       "Spaans",
-    #                       "drama, muziek",
-    #                       "102 min",
-    #                       "Bas, Eelco",
-    #                       "",
-    #                       "Ema is een explosief, stijlvol en gewaagd portret van een danseres.",
-    #                       "https://tickets.de-fabriek.nl/fabriek/nl/flow_configs/webshop/steps/start/show/428247",
-    #                       "https://www.de-fabriek.nl/films/290-ema.html"]
-    #     # event_start_date,event_start_time,event_end_date,event_end_time,event_name,event_slug,post_content,location,category
-    #     expected = ["2020-06-29","20:30:00","2020-06-29","22:12:00",
-    #                 '"Ema"',
-    #                 "ema_2020-06-29_20-30",
-    #                 "\"Ema is een explosief, stijlvol en gewaagd portret van een danseres.<br>"
-    #                 "<br>"
-    #                 "<strong>Gesproken taal: </strong>Spaans<br>"
-    #                 "<strong>Genre: </strong>drama, muziek<br>"
-    #                 "<strong>Speelduur: </strong>102 min<br>"
-    #                 "<br>"
-    #                 "https://www.de-fabriek.nl/films/290-ema.html\"",
-    #                 "filmtheater-de-fabriek-2",
-    #                 "film"]
-    #     result = fh.create_event_row(row)
-    #     self.assertEqual(result, expected)
+    def test_create_event_row_full_no_date(self):
+        row: List[str] = ["",
+                          "20:30",
+                          "Ema, the movie",
+                          "Spaans",
+                          "drama, muziek",
+                          "102 min",
+                          "Bas, Eelco",
+                          "Ema, de nieuwe film van regisseur Pablo Larraín (Jackie).",
+                          "Ema is een explosief, stijlvol en gewaagd portret van een danseres.",
+                          "https://tickets.de-fabriek.nl/fabriek/nl/flow_configs/webshop/steps/start/show/428247",
+                          "https://www.de-fabriek.nl/films/290-ema.html"]
+        with self.assertRaises(ValueError):
+            fh.create_event_row(row)
+
+    def test_create_event_manager_file(self):
+        currentDirectory = os.getcwd()
+        input_file = open(f"../../../test/fabriek_sorted_test_01_OK.csv")
+        output_file = open(f"../../../output/fabriek_event_manager_test_01_OK.csv", mode="w")
+        fh.create_event_manager_file(input_file=input_file, output_file=output_file)
+
+    def test_create_event_manager_file_invalid_no_date(self):
+        input_file = open(f"../../../test/fabriek_sorted_test_02_2nd_movie_no_date.csv")
+        output_file = open(f"../../../output/fabriek_event_manager_test_02_2nd_movie_no_date.csv", mode="w")
+        fh.create_event_manager_file(input_file=input_file, output_file=output_file)
+
+
