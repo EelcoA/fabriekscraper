@@ -243,7 +243,7 @@ def create_event_row(row: List[str]):
 
     event_name = '"' + titel + '"'
     event_slug = to_slug(titel) + "_" + datum + "_" + to_slug(tijd)
-    post_excerpt = synopsis
+    post_excerpt = '"' + synopsis + '"'
     post_content = '"' + \
                    ((to_strong(synopsis) + "<br>" + "<br>") if synopsis != "" else "") + \
                    beschrijving + "<br>" + \
@@ -254,7 +254,7 @@ def create_event_row(row: List[str]):
                    "<br>" + \
                    film_url + \
                    '"'
-    location = "filmtheater-de-fabriek-2"
+    location = "filmtheater-de-fabriek"
     category = "film"
 
     event_row = [event_start_date, event_start_time, event_end_date, event_end_time,
