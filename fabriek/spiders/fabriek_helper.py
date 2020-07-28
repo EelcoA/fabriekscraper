@@ -271,7 +271,7 @@ def create_event_manager_file(input_file: io.IOBase, output_file: io.IOBase):
     """
     header_row = ["event_start_date", "event_start_time", "event_end_date", "event_end_time", "event_name",
                   "event_slug",
-                  "post_excerpt", "post_content", "location", "category"]
+                  "post_excerpt", "post_content", "location-slug", "category-slug"]
     output_file.write(",".join(header_row) + "\n")
 
     with input_file as input_file:
