@@ -47,4 +47,9 @@ contains fields:
 - AESSET IT - The Neteherlands
 - www.aeset.nl
 
+##### Change log
+2020-07-29
+- removed slug, since event-manager creates its own slug
+- add 10 minutes for trailers to calculate end time 
+
 

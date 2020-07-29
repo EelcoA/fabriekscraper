@@ -234,7 +234,8 @@ def create_event_row(row: List[str]):
         raise ValueError("\"tijd bevat geen, of geen geldige waarde: " + ( "Leeg" if tijd is None else tijd) + "\"")
     event_start_time = tijd + ":00"
 
-    playtime_minutes = get_minutes(speelduur)
+    # add 10 minutes for trailers
+    playtime_minutes = get_minutes(speelduur) + 10
     start_date_time: dt.datetime = create_date_time(event_start_date, event_start_time)
     end_date_time: dt.datetime   = add_minutes_to_datetime(start_date_time, playtime_minutes)
 
@@ -242,7 +243,7 @@ def create_event_row(row: List[str]):
     event_end_time = get_time_str(end_date_time)
 
     event_name = '"' + titel + '"'
-    event_slug = to_slug(titel) + "_" + datum + "_" + to_slug(tijd)
+    # event_slug = to_slug(titel) + "_" + datum + "_" + to_slug(tijd) -- removed, since event-manager makes its own slug
     post_excerpt = '"' + synopsis + '"'
     post_content = '"' + \
                    ((to_strong(synopsis) + "<br>" + "<br>") if synopsis != "" else "") + \
@@ -252,13 +253,13 @@ def create_event_row(row: List[str]):
                    to_strong("Genre: ") + genre + "<br>" + \
                    to_strong("Speelduur: ") + speelduur + "<br>" + \
                    "<br>" + \
-                   film_url + \
+                   '<a href=\'' + film_url + '\'>' + film_url + '</a>' + \
                    '"'
     location = "filmtheater-de-fabriek"
     category = "film"
 
     event_row = [event_start_date, event_start_time, event_end_date, event_end_time,
-                 event_name, event_slug, post_excerpt, post_content, location, category]
+                 event_name, post_excerpt, post_content, location, category]
 
     return event_row
 
@@ -270,7 +271,6 @@ def create_event_manager_file(input_file: io.IOBase, output_file: io.IOBase):
     :type output_file: object
     """
     header_row = ["event_start_date", "event_start_time", "event_end_date", "event_end_time", "event_name",
-                  "event_slug",
                   "post_excerpt", "post_content", "location-slug", "category-slug"]
     output_file.write(",".join(header_row) + "\n")
 
