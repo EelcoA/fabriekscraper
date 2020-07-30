@@ -201,9 +201,9 @@ class Test(TestCase):
                     "<strong>Genre: </strong>drama, muziek<br>"
                     "<strong>Speelduur: </strong>102 min<br>"
                     "<br>"
-                    "<a href=\"https://www.de-fabriek.nl/films/290-ema.html\">"
+                    "<a href=\'https://www.de-fabriek.nl/films/290-ema.html\'>"
                     "https://www.de-fabriek.nl/films/290-ema.html</a>\"",
-                    "filmtheater-de-fabriek",
+                    "filmtheater-de-fabriek-2",
                     "film"]
         result = fh.create_event_row(row)
         self.assertEqual(result, expected)

@@ -151,3 +151,4 @@ input_file: io.TextIOWrapper = open(output_csv_file_sorted)
 output_file: io.TextIOWrapper = open(output_csv_file_event_manager, mode="w")
 
 fh.create_event_manager_file(input_file=input_file, output_file=output_file)
+print("\nBestand met films gecreerd in: " + output_file.name)

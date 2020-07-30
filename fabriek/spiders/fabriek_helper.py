@@ -255,7 +255,7 @@ def create_event_row(row: List[str]):
                    "<br>" + \
                    '<a href=\'' + film_url + '\'>' + film_url + '</a>' + \
                    '"'
-    location = "filmtheater-de-fabriek"
+    location = "filmtheater-de-fabriek-2"
     category = "film"
 
     event_row = [event_start_date, event_start_time, event_end_date, event_end_time,
