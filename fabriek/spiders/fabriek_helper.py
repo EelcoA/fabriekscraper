@@ -330,7 +330,7 @@ def createOsIndependentPath(dir: str, file_name: str, current_depth_from_base: i
     base_dir_array = file_dir_array[0:len(file_dir_array) - current_depth_from_base]
     base_dir_array.append(dir)
     base_dir_array.append(file_name)
-    result = os.sep + os.path.sep.join(base_dir_array)
+    result = os.path.sep.join(base_dir_array)
     return result
 
 
