@@ -11,6 +11,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 from fabriek.spiders import fabriek_helper as fh
 
+file_encoding = 'utf-8'
 
 def get_text_from_movie(response, param):
     text = response.xpath("//div[@class='film__content__meta']/p/strong[text()='" + param + "']/../text()").get()
@@ -79,6 +80,8 @@ class FabriekSpider(CrawlSpider):
         content_detail1 = response.xpath("//div[@class='film__content__details__left']/p[1]/text()").get()
         content_detail2 = response.xpath("//div[@class='film__content__details__left']/p[2]/text()").get()
         content_detail3 = response.xpath("//div[@class='film__content__details__left']/p[3]/text()").get()
+        content_detail4 = response.xpath("//div[@class='film__content__details__left']/p[4]/text()").get()
+        content_detail5 = response.xpath("//div[@class='film__content__details__left']/p[5]/text()").get()
         content_detail = ""
         if content_detail1 is not None:
             content_detail += content_detail1
@@ -86,6 +89,10 @@ class FabriekSpider(CrawlSpider):
             content_detail += content_detail2
         if content_detail3 is not None:
             content_detail += content_detail3
+        if content_detail4 is not None:
+            content_detail += content_detail4
+        if content_detail5 is not None:
+            content_detail += content_detail5
 
         yield {'datum': day,
                'tijd': time,
@@ -118,37 +125,17 @@ process = CrawlerProcess(settings={
 process.crawl(FabriekSpider)
 process.start()  # the script will block here until the crawling is finished
 
-# open and read the file
+# Sort the file and write into a new file
 
-header_row: List[str]
-movie_list: List[List[str]] = []
+input_file: io.TextIOWrapper  = open(output_csv_file, encoding=file_encoding)
+output_file: io.TextIOWrapper = open(output_csv_file_sorted, mode="w", encoding=file_encoding)
+fh.create_sorted_file(input_file, output_file)
 
-with open(output_csv_file) as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter=',')
-    line_count = 0
-    for row in csv_reader:
-        if line_count == 0:
-            header_row = row
-        else:
-            movie_list.append(row)
-        line_count += 1
 
-movie_list.sort()
-output_file = open(output_csv_file_sorted, mode="w")
-output_file.write(",".join(header_row) + "\n")
-for row in movie_list:
-    row_nr = 0
-    for field in row:
-        if "," in field:
-            row[row_nr] = f'"{row[row_nr]}"'
-        row_nr += 1
-    output_file.write(",".join(row) + "\n")
-output_file.close()
+# Create file with layout for the Event Manager File Import plugin (https://github.com/EelcoA/em-file-import)
 
-# write the file for Event Manager
-
-input_file: io.TextIOWrapper = open(output_csv_file_sorted)
-output_file: io.TextIOWrapper = open(output_csv_file_event_manager, mode="w")
+input_file: io.TextIOWrapper = open(output_csv_file_sorted, encoding=file_encoding)
+output_file: io.TextIOWrapper = open(output_csv_file_event_manager, mode="w", encoding=file_encoding)
 
 fh.create_event_manager_file(input_file=input_file, output_file=output_file)
 print("\nBestand met films gecreerd in: " + output_file.name)

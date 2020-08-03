@@ -71,6 +71,7 @@ def is_valid_date_string(datum: str) -> bool:
     result = is_pattern_matching("^[0-9]{4}-[0-9]{2}-[0-9]{2}$", datum)
     return result
 
+
 def is_valid_time_string(time: str) -> bool:
     """
     Check if tijd contains hh:mm:ss
@@ -79,6 +80,7 @@ def is_valid_time_string(time: str) -> bool:
     """
     result = is_pattern_matching("^[0-9][0-9]:[0-9][0-9]:[0-9][0-9]$", time)
     return result
+
 
 def to_slug(titel: str):
     """
@@ -202,7 +204,7 @@ def get_minutes(speelduur: str) -> int:
     """
     if not is_valid_speelduur(speelduur):
         raise ValueError("\"Speelduur value not valid, must be '99[9] min', but is: " +
-                         ( "leeg" if speelduur is None else speelduur ) + "\"")
+                         ("leeg" if speelduur is None else speelduur) + "\"")
 
     # get speelduur, make sure it is digits
     speelduur_list = speelduur.split(" ")
@@ -212,7 +214,6 @@ def get_minutes(speelduur: str) -> int:
 
 
 def create_event_row(row: List[str]):
-
     # get all fields out of the List
     datum = row[0]
     tijd = row[1]
@@ -231,13 +232,13 @@ def create_event_row(row: List[str]):
     event_start_date = datum
 
     if not is_valid_begintijd(tijd):
-        raise ValueError("\"tijd bevat geen, of geen geldige waarde: " + ( "Leeg" if tijd is None else tijd) + "\"")
+        raise ValueError("\"tijd bevat geen, of geen geldige waarde: " + ("Leeg" if tijd is None else tijd) + "\"")
     event_start_time = tijd + ":00"
 
     # add 10 minutes for trailers
     playtime_minutes = get_minutes(speelduur) + 10
     start_date_time: dt.datetime = create_date_time(event_start_date, event_start_time)
-    end_date_time: dt.datetime   = add_minutes_to_datetime(start_date_time, playtime_minutes)
+    end_date_time: dt.datetime = add_minutes_to_datetime(start_date_time, playtime_minutes)
 
     event_end_date = get_date_str(end_date_time)
     event_end_time = get_time_str(end_date_time)
@@ -262,6 +263,37 @@ def create_event_row(row: List[str]):
                  event_name, post_excerpt, post_content, location, category]
 
     return event_row
+
+
+def create_sorted_file(input_file, output_file):
+    header_row: List[str]
+    movie_list: List[List[str]] = []
+
+    with input_file as csv_file:
+        # print("Encoding van " + output_csv_file + "=")
+        print(csv_file.encoding)
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        for row in csv_reader:
+            if line_count == 0:
+                header_row = row
+            else:
+                movie_list.append(row)
+            line_count += 1
+
+    movie_list.sort()
+
+    output_file.write(",".join(header_row) + "\n")
+    for row in movie_list:
+        row_nr = 0
+        for field in row:
+            if "," in field:
+                row[row_nr] = f'"{row[row_nr]}"'
+            row_nr += 1
+        output_file.write(",".join(row) + "\n")
+    output_file.close()
+
+    return None
 
 
 def create_event_manager_file(input_file: io.IOBase, output_file: io.IOBase):

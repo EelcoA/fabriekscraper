@@ -235,3 +235,7 @@ class Test(TestCase):
         fh.create_event_manager_file(input_file=input_file, output_file=output_file)
 
 
+    def test_sort_file(self):
+        input_file = open(f"../../../test/fabriek_2020-08-03_134658_01_encoding.csv", encoding="utf-8")
+        output_file = open(f"../../../output/fabriek_2020-08-03_134658_01_encoding_sorted.csv", mode="w")
+        fh.create_event_manager_file(input_file=input_file, output_file=output_file)
