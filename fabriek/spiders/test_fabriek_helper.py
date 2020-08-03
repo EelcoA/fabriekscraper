@@ -224,7 +224,6 @@ class Test(TestCase):
             fh.create_event_row(row)
 
     def test_create_event_manager_file(self):
-        currentDirectory = os.getcwd()
         input_file = open(f"../../../test/fabriek_sorted_test_01_OK.csv")
         output_file = open(f"../../../output/fabriek_event_manager_test_01_OK.csv", mode="w")
         fh.create_event_manager_file(input_file=input_file, output_file=output_file)
