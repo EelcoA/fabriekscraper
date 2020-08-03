@@ -200,6 +200,7 @@ class Test(TestCase):
                     "<strong>Gesproken taal: </strong>Spaans<br>"
                     "<strong>Genre: </strong>drama, muziek<br>"
                     "<strong>Speelduur: </strong>102 min<br>"
+                    "<strong>Cast: </strong>Bas, Eelco<br>"
                     "<br>"
                     "<a href=\'https://www.de-fabriek.nl/films/290-ema.html\'>"
                     "https://www.de-fabriek.nl/films/290-ema.html</a>\"",

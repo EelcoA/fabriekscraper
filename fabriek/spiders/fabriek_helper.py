@@ -254,6 +254,7 @@ def create_event_row(row: List[str]):
                    to_strong("Gesproken taal: ") + taal + "<br>" + \
                    to_strong("Genre: ") + genre + "<br>" + \
                    to_strong("Speelduur: ") + speelduur + "<br>" + \
+                   to_strong("Cast: ") + cast + "<br>" + \
                    "<br>" + \
                    '<a href=\'' + film_url + '\'>' + film_url + '</a>' + \
                    '"'

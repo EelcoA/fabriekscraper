@@ -1,5 +1,6 @@
 # Visual Studio settings
 .vs
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
