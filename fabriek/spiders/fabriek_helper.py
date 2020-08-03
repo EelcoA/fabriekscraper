@@ -270,8 +270,6 @@ def create_sorted_file(input_file, output_file):
     movie_list: List[List[str]] = []
 
     with input_file as csv_file:
-        # print("Encoding van " + output_csv_file + "=")
-        print(csv_file.encoding)
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         for row in csv_reader:
