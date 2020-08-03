@@ -13,6 +13,7 @@ from fabriek.spiders import fabriek_helper as fh
 
 file_encoding = 'utf-8'
 
+
 def get_text_from_movie(response, param):
     text = response.xpath("//div[@class='film__content__meta']/p/strong[text()='" + param + "']/../text()").get()
     if text is not None:
@@ -113,9 +114,9 @@ class FabriekSpider(CrawlSpider):
 # ----------------------------------------------------------------------------
 
 datetime = datetime.datetime.now()
-output_csv_file: str = f"output/fabriek_{datetime:%Y-%m-%d_%H%M%S}_01.csv"
-output_csv_file_sorted: str = f"output/fabriek_{datetime:%Y-%m-%d_%H%M%S}_02_sorted.csv"
-output_csv_file_event_manager: str = f"output/fabriek_{datetime:%Y-%m-%d_%H%M%S}_03_event_manager.csv"
+output_csv_file: str = "output" + os.sep + f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_01.csv"
+output_csv_file_sorted: str = "output" + os.sep + f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_02_sorted.csv"
+output_csv_file_event_manager: str = "output" + os.sep + f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_03_event_manager.csv"
 process = CrawlerProcess(settings={
     "FEEDS": {
         output_csv_file: {"format": "csv"},
@@ -127,10 +128,9 @@ process.start()  # the script will block here until the crawling is finished
 
 # Sort the file and write into a new file
 
-input_file: io.TextIOWrapper  = open(output_csv_file, encoding=file_encoding)
+input_file: io.TextIOWrapper = open(output_csv_file, encoding=file_encoding)
 output_file: io.TextIOWrapper = open(output_csv_file_sorted, mode="w", encoding=file_encoding)
 fh.create_sorted_file(input_file, output_file)
-
 
 # Create file with layout for the Event Manager File Import plugin (https://github.com/EelcoA/em-file-import)
 

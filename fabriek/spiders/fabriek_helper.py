@@ -1,5 +1,6 @@
 import csv
 import io
+import os
 import re
 import time
 import unicodedata
@@ -321,3 +322,23 @@ def create_event_manager_file(input_file: io.IOBase, output_file: io.IOBase):
     output_file.close()
 
     return None
+
+
+def createOsIndependentPath(dir: str, file_name: str, current_depth_from_base: int = 2) -> str:
+    file_dir = os.path.dirname(__file__)
+    file_dir_array = file_dir.split(os.path.sep)
+    base_dir_array = file_dir_array[0:len(file_dir_array) - current_depth_from_base]
+    base_dir_array.append(dir)
+    base_dir_array.append(file_name)
+    result = os.sep + os.path.sep.join(base_dir_array)
+    return result
+
+
+def openInputfile(dir, file_name):
+    path: str = createOsIndependentPath(dir, file_name)
+    return open(path, encoding="utf-8")
+
+
+def openOutputfile(dir, file_name):
+    path: str = createOsIndependentPath(dir, file_name)
+    return open(path, mode="w", encoding="utf-8")

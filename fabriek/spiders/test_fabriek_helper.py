@@ -224,22 +224,23 @@ class Test(TestCase):
             fh.create_event_row(row)
 
     def test_create_event_manager_file(self):
-        input_file = open(os.path.join("..","..","..","test", "fabriek_sorted_test_01_OK.csv"))
-        output_file = open(os.path.join("..", "..", "..", "output", "fabriek_event_manager_test_01_OK.csv"), mode="w")
+        input_file = fh.openInputfile(dir="test", file_name="fabriek_sorted_test_01_OK.csv")
+        output_file = fh.openOutputfile(dir="output", file_name="fabriek_event_manager_test_01_OK.csv")
         fh.create_event_manager_file(input_file=input_file, output_file=output_file)
 
+
     def test_create_event_manager_file_invalid_no_date(self):
-        input_file = open(os.path.join("..", "..", "..", "test","fabriek_sorted_test_02_2nd_movie_no_date.csv"))
-        output_file = open(os.path.join("..", "..", "..", "output","fabriek_event_manager_test_02_2nd_movie_no_date.csv"), mode="w")
+        input_file = fh.openInputfile("test","fabriek_sorted_test_02_2nd_movie_no_date.csv")
+        output_file = fh.openOutputfile("output","fabriek_event_manager_test_02_2nd_movie_no_date.csv")
         fh.create_event_manager_file(input_file=input_file, output_file=output_file)
 
 
     def test_encoding_issues_step_1_sort_file_with(self):
-        input_file = open(os.path.join("..", "..", "..", "test", "fabriek_2020-08-03_134658_01_encoding.csv"), encoding="utf-8")
-        output_file = open(os.path.join("..", "..", "..", "output", "fabriek_2020-08-03_134658_01_encoding_sorted.csv"), mode="w")
+        input_file = fh.openInputfile("test", "fabriek_2020-08-03_134658_01_encoding.csv")
+        output_file = fh.openOutputfile("output", "fabriek_2020-08-03_134658_01_encoding_sorted.csv")
         fh.create_sorted_file(input_file=input_file, output_file=output_file)
 
     def test_encoding_issues_step_1_create_event_manager_file(self):
-        input_file = open(os.path.join("..", "..", "..", "test", "fabriek_2020-08-03_134658_02_encoding_sorted.csv"), encoding="utf-8")
-        output_file = open(os.path.join("..", "..", "..", "output", "fabriek_2020-08-03_134658_03_encoding_event_manager.csv"), mode="w")
+        input_file = fh.openInputfile("test", "fabriek_2020-08-03_134658_02_encoding_sorted.csv")
+        output_file = fh.openOutputfile("output", "fabriek_2020-08-03_134658_03_encoding_event_manager.csv")
         fh.create_sorted_file(input_file=input_file, output_file=output_file)
