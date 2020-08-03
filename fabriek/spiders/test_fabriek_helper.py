@@ -231,7 +231,7 @@ class Test(TestCase):
 
 
     def test_create_event_manager_file_invalid_no_date(self):
-        input_file = fh.openInputfile("test","fabriek_sorted_test_02_2nd_movie_no_date.csv")
+        input_file = fh.openInputfile("test", "fabriek_sorted_test_02_2nd_movie_no_date.csv")
         output_file = fh.openOutputfile("output","fabriek_event_manager_test_02_2nd_movie_no_date.csv")
         fh.create_event_manager_file(input_file=input_file, output_file=output_file)
 

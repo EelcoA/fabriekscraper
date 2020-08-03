@@ -114,12 +114,11 @@ class FabriekSpider(CrawlSpider):
 # ----------------------------------------------------------------------------
 
 datetime = datetime.datetime.now()
-output_csv_file: str = "output" + os.sep + f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_01.csv"
-output_csv_file_sorted: str = "output" + os.sep + f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_02_sorted.csv"
-output_csv_file_event_manager: str = "output" + os.sep + f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_03_event_manager.csv"
+output_csv_file_name = f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_01.csv"
+output_csv_file_path: str = "output" + os.sep + output_csv_file_name
 process = CrawlerProcess(settings={
     "FEEDS": {
-        output_csv_file: {"format": "csv"},
+        output_csv_file_path: {"format": "csv"},
     }
 })
 
@@ -127,15 +126,17 @@ process.crawl(FabriekSpider)
 process.start()  # the script will block here until the crawling is finished
 
 # Sort the file and write into a new file
+output_csv_file_sorted: str = f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_02_sorted.csv"
+output_csv_file_event_manager: str = f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_03_event_manager.csv"
 
-input_file: io.TextIOWrapper = open(output_csv_file, encoding=file_encoding)
-output_file: io.TextIOWrapper = open(output_csv_file_sorted, mode="w", encoding=file_encoding)
+input_file: io.TextIOWrapper = fh.openInputfile("output", output_csv_file_name)
+output_file: io.TextIOWrapper = fh.openOutputfile("output", output_csv_file_sorted)
 fh.create_sorted_file(input_file, output_file)
 
 # Create file with layout for the Event Manager File Import plugin (https://github.com/EelcoA/em-file-import)
 
-input_file: io.TextIOWrapper = open(output_csv_file_sorted, encoding=file_encoding)
-output_file: io.TextIOWrapper = open(output_csv_file_event_manager, mode="w", encoding=file_encoding)
+input_file: io.TextIOWrapper = fh.openInputfile("output", output_csv_file_sorted)
+output_file: io.TextIOWrapper = fh.openOutputfile("output", output_csv_file_event_manager)
 
 fh.create_event_manager_file(input_file=input_file, output_file=output_file)
 print("\nBestand met films gecreerd in: " + output_file.name)

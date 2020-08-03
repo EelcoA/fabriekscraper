@@ -335,7 +335,7 @@ def createOsIndependentPath(dir: str, file_name: str, current_depth_from_base: i
     return result
 
 
-def openInputfile(dir, file_name):
+def openInputfile(dir: str, file_name):
     path: str = createOsIndependentPath(dir, file_name)
     return open(path, encoding="utf-8")
 
