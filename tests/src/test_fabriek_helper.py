@@ -237,12 +237,12 @@ class Test(TestCase):
     def test_encoding_issues_step_1_sort_file_with(self):
         input_file = self.openTestFileForInput("fabriek_2020-08-03_134658_01_encoding.csv")
         output_file = self.openTestFileForOutput("fabriek_2020-08-03_134658_01_encoding_sorted.csv")
-        fh.sortCrawlOutputIntoNewFile(input_file=input_file, output_file=output_file)
+        fh.sort_crawl_output_into_new_file(input_file=input_file, output_file=output_file)
 
     def test_encoding_issues_step_1_create_event_manager_file(self):
         input_file = self.openTestFileForInput("fabriek_2020-08-03_134658_02_encoding_sorted.csv")
         output_file = self.openTestFileForOutput("fabriek_2020-08-03_134658_03_encoding_event_manager.csv")
-        fh.sortCrawlOutputIntoNewFile(input_file=input_file, output_file=output_file)
+        fh.sort_crawl_output_into_new_file(input_file=input_file, output_file=output_file)
 
     # def test_web_page_one_move_yield(self):
     #     yield scrapy.Request(url="https://www.de-fabriek.nl/films/404-the+souvenir.html", callback=fh.parse_movie,

@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
-import io
-import os
 from typing import List
-import datetime
 import scrapy
-from scrapy.crawler import CrawlerProcess
 from scrapy.spiders import CrawlSpider
 from fabriek.spiders import fabriek_helper as fh
-
-file_encoding = 'utf-8'
 
 
 class FabriekSpider(CrawlSpider):

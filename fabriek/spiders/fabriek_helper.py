@@ -275,7 +275,7 @@ def create_event_row(row: List[str]):
     return event_row
 
 
-def sortCrawlOutputIntoNewFile(input_file, output_file):
+def sort_crawl_output_into_new_file(input_file, output_file):
     header_row: List[str]
     movie_list: List[List[str]] = []
 
@@ -335,13 +335,13 @@ def create_event_manager_file(input_file: io.IOBase, output_file: io.IOBase):
 
     return None
 
-def openFileForInput(inputFileName):
-    inputFilePath = createFilePathForFileInOutputDir(inputFileName)
+def open_file_for_input(inputFileName):
+    inputFilePath = create_filepath_for_file_in_output_dir(inputFileName)
     return open(inputFilePath, encoding="utf-8")
 
 
-def openFileForOutput(outputFileName):
-    outputFileNamePath = createFilePathForFileInOutputDir(outputFileName)
+def open_file_for_output(outputFileName):
+    outputFileNamePath = create_filepath_for_file_in_output_dir(outputFileName)
     return open(outputFileNamePath, mode="w", encoding="utf-8")
 
 
@@ -391,6 +391,6 @@ def get_text_from_movie(response, param):
     return text
 
 
-def createFilePathForFileInOutputDir(fileName: str) -> str:
+def create_filepath_for_file_in_output_dir(fileName: str) -> str:
     file_path: str = os.path.join(OUTPUT_DIR, fileName)
     return file_path
