@@ -1,24 +1,14 @@
 # -*- coding: utf-8 -*-
 import io
 import os
-from logging import ERROR
-from typing import Dict, List
-import csv
+from typing import List
 import datetime
 import scrapy
 from scrapy.crawler import CrawlerProcess
-from scrapy.linkextractors import LinkExtractor
-from scrapy.spiders import CrawlSpider, Rule
+from scrapy.spiders import CrawlSpider
 from fabriek.spiders import fabriek_helper as fh
 
 file_encoding = 'utf-8'
-
-
-def get_text_from_movie(response, param):
-    text = response.xpath("//div[@class='film__content__meta']/p/strong[text()='" + param + "']/../text()").get()
-    if text is not None:
-        text = text.strip()
-    return text
 
 
 class FabriekSpider(CrawlSpider):
@@ -60,7 +50,7 @@ class FabriekSpider(CrawlSpider):
         i: int = 0
 
         for movie_title in movie_titles:
-            yield scrapy.Request(url=self.start_urls[0] + movie_urls[i], callback=self.parse_movie,
+            yield scrapy.Request(url=self.start_urls[0] + movie_urls[i], callback=fh.parse_movie,
                                  priority=10,
                                  dont_filter=True,
                                  cb_kwargs=dict(title=movie_title,
@@ -70,73 +60,4 @@ class FabriekSpider(CrawlSpider):
                                                 movie_url=self.start_urls[0] + movie_urls[i]))
             i += 1
 
-    def parse_movie(self, response, title, day, time, ticket_url, movie_url):
-        self.logger.debug("PARSE_MOVIE: " + title)
-        title: str = response.xpath("//div[@class='hero-slide-content']/h1/text()").get()
-        language: str = get_text_from_movie(response, "Gesproken taal:")
-        genres: str = get_text_from_movie(response, "Genre:")
-        playing_time: str = get_text_from_movie(response, "Speelduur:")
-        cast: str = get_text_from_movie(response, "Cast:")
-        synopsis: str = response.xpath("//p[@class='film__synopsis__intro']/strong/text()").get()
-        content_detail1 = response.xpath("//div[@class='film__content__details__left']/p[1]/text()").get()
-        content_detail2 = response.xpath("//div[@class='film__content__details__left']/p[2]/text()").get()
-        content_detail3 = response.xpath("//div[@class='film__content__details__left']/p[3]/text()").get()
-        content_detail4 = response.xpath("//div[@class='film__content__details__left']/p[4]/text()").get()
-        content_detail5 = response.xpath("//div[@class='film__content__details__left']/p[5]/text()").get()
-        content_detail = ""
-        if content_detail1 is not None:
-            content_detail += content_detail1
-        if content_detail2 is not None:
-            content_detail += content_detail2
-        if content_detail3 is not None:
-            content_detail += content_detail3
-        if content_detail4 is not None:
-            content_detail += content_detail4
-        if content_detail5 is not None:
-            content_detail += content_detail5
 
-        yield {'datum': day,
-               'tijd': time,
-               'titel': title,
-               'taal': language,
-               'genre': genres,
-               'speelduur': playing_time,
-               'cast': cast,
-               'synopsis': synopsis,
-               'beschrijving': content_detail,
-               'ticket-url': ticket_url,
-               'film-url': movie_url
-               }
-
-
-# ----------------------------------------------------------------------------
-# Start here
-# ----------------------------------------------------------------------------
-
-datetime = datetime.datetime.now()
-output_csv_file_name = f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_01.csv"
-output_csv_file_path: str = "output" + os.sep + output_csv_file_name
-process = CrawlerProcess(settings={
-    "FEEDS": {
-        output_csv_file_path: {"format": "csv"},
-    }
-})
-
-process.crawl(FabriekSpider)
-process.start()  # the script will block here until the crawling is finished
-
-# Sort the file and write into a new file
-output_csv_file_sorted: str = f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_02_sorted.csv"
-output_csv_file_event_manager: str = f"fabriek_{datetime:%Y-%m-%d_%H%M%S}_03_event_manager.csv"
-
-input_file: io.TextIOWrapper = fh.openInputfile("output", output_csv_file_name)
-output_file: io.TextIOWrapper = fh.openOutputfile("output", output_csv_file_sorted)
-fh.create_sorted_file(input_file, output_file)
-
-# Create file with layout for the Event Manager File Import plugin (https://github.com/EelcoA/em-file-import)
-
-input_file: io.TextIOWrapper = fh.openInputfile("output", output_csv_file_sorted)
-output_file: io.TextIOWrapper = fh.openOutputfile("output", output_csv_file_event_manager)
-
-fh.create_event_manager_file(input_file=input_file, output_file=output_file)
-print("\nBestand met films gecreerd in: " + output_file.name)

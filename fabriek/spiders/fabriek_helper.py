@@ -7,6 +7,9 @@ import unicodedata
 import datetime as dt
 from typing import List
 
+import definitions
+from definitions import OUTPUT_DIR
+
 
 def to_strong(text: str):
     """
@@ -236,8 +239,13 @@ def create_event_row(row: List[str]):
         raise ValueError("\"tijd bevat geen, of geen geldige waarde: " + ("Leeg" if tijd is None else tijd) + "\"")
     event_start_time = tijd + ":00"
 
-    # add 10 minutes for trailers
-    playtime_minutes = get_minutes(speelduur) + 10
+    # add 10 minutes for trailers, when no playtime found, we use zero,
+    # so that end time = start time, showing we don't know
+    try:
+        playtime_minutes = get_minutes(speelduur) + 10
+    except ValueError:
+        playtime_minutes = 0
+
     start_date_time: dt.datetime = create_date_time(event_start_date, event_start_time)
     end_date_time: dt.datetime = add_minutes_to_datetime(start_date_time, playtime_minutes)
 
@@ -267,7 +275,7 @@ def create_event_row(row: List[str]):
     return event_row
 
 
-def create_sorted_file(input_file, output_file):
+def sortCrawlOutputIntoNewFile(input_file, output_file):
     header_row: List[str]
     movie_list: List[List[str]] = []
 
@@ -292,6 +300,8 @@ def create_sorted_file(input_file, output_file):
             row_nr += 1
         output_file.write(",".join(row) + "\n")
     output_file.close()
+
+    print("\nBestand met gesorteerde film data: " + output_file.name)
 
     return None
 
@@ -321,25 +331,66 @@ def create_event_manager_file(input_file: io.IOBase, output_file: io.IOBase):
                     output_file.write(msg + "\n")
             line_count += 1
     output_file.close()
+    print("\nBestand met eventmanager data    : " + output_file.name)
 
     return None
 
-
-def createOsIndependentPath(dir: str, file_name: str, current_depth_from_base: int = 2) -> str:
-    file_dir = os.path.dirname(__file__)
-    file_dir_array = file_dir.split(os.path.sep)
-    base_dir_array = file_dir_array[0:len(file_dir_array) - current_depth_from_base]
-    base_dir_array.append(dir)
-    base_dir_array.append(file_name)
-    result = os.path.sep.join(base_dir_array)
-    return result
+def openFileForInput(inputFileName):
+    inputFilePath = createFilePathForFileInOutputDir(inputFileName)
+    return open(inputFilePath, encoding="utf-8")
 
 
-def openInputfile(dir: str, file_name):
-    path: str = createOsIndependentPath(dir, file_name)
-    return open(path, encoding="utf-8")
+def openFileForOutput(outputFileName):
+    outputFileNamePath = createFilePathForFileInOutputDir(outputFileName)
+    return open(outputFileNamePath, mode="w", encoding="utf-8")
 
 
-def openOutputfile(dir, file_name):
-    path: str = createOsIndependentPath(dir, file_name)
-    return open(path, mode="w", encoding="utf-8")
+def parse_movie(response, title, day, time, ticket_url, movie_url):
+    title: str = response.xpath("//div[@class='hero-slide-content']/h1/text()").get()
+    language: str = get_text_from_movie(response, "Gesproken taal:")
+    genres: str = get_text_from_movie(response, "Genre:")
+    playing_time: str = get_text_from_movie(response, "Speelduur:")
+    cast: str = get_text_from_movie(response, "Cast:")
+    synopsis: str = response.xpath("//p[@class='film__synopsis__intro']/strong/text()").get()
+    content_detail1 = response.xpath("//div[@class='film__content__details__left']/p[1]").get()
+    content_detail2 = response.xpath("//div[@class='film__content__details__left']/p[2]").get()
+    content_detail3 = response.xpath("//div[@class='film__content__details__left']/p[3]").get()
+    content_detail4 = response.xpath("//div[@class='film__content__details__left']/p[4]").get()
+    content_detail5 = response.xpath("//div[@class='film__content__details__left']/p[5]").get()
+    content_detail = ""
+    content_detail
+    if content_detail1 is not None:
+        content_detail += content_detail1
+    if content_detail2 is not None:
+        content_detail += content_detail2
+    if content_detail3 is not None:
+        content_detail += content_detail3
+    if content_detail4 is not None:
+        content_detail += content_detail4
+    if content_detail5 is not None:
+        content_detail += content_detail5
+
+    yield {'datum': day,
+           'tijd': time,
+           'titel': title,
+           'taal': language,
+           'genre': genres,
+           'speelduur': playing_time,
+           'cast': cast,
+           'synopsis': synopsis,
+           'beschrijving': content_detail,
+           'ticket-url': ticket_url,
+           'film-url': movie_url
+           }
+
+
+def get_text_from_movie(response, param):
+    text = response.xpath("//div[@class='film__content__meta']/p/strong[text()='" + param + "']/../text()").get()
+    if text is not None:
+        text = text.strip()
+    return text
+
+
+def createFilePathForFileInOutputDir(fileName: str) -> str:
+    file_path: str = os.path.join(OUTPUT_DIR, fileName)
+    return file_path

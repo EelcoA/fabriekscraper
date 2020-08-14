@@ -1,12 +1,14 @@
 import os
 from datetime import datetime
-from typing import Dict, List
+from typing import List
 from unittest import TestCase
-
+from definitions import ROOT_DIR
 from fabriek.spiders import fabriek_helper as fh
 
-
 class Test(TestCase):
+
+    def setUp(self) -> None:
+        OUTPUT_DIR = os.path.join(ROOT_DIR, "tests", "resources")
 
     def test_to_strong(self):
         # valid
@@ -67,7 +69,6 @@ class Test(TestCase):
         self.assertFalse(fh.is_valid_date_string(None))
 
     def test_to_slug(self):
-
         # standard
         self.assertEqual(fh.to_slug("My own movie"), "my-own-movie")
 
@@ -80,9 +81,7 @@ class Test(TestCase):
         self.assertEqual(fh.to_slug("Gli anni più belli"), "gli-anni-piu-belli")
         self.assertEqual(fh.to_slug("this/ and that\\"), "this-and-that-")
 
-
     def test_create_date_time(self):
-
         # Valid situation
         result = fh.create_date_time(date_string="2020-06-07", time_string="13:00:00")
         expected = datetime(year=2020, month=6, day=7, hour=13, minute=00, second=00)
@@ -102,9 +101,7 @@ class Test(TestCase):
         with self.assertRaises(ValueError):
             result = fh.create_date_time(date_string="2020-06-07", time_string=None)
 
-
     def test_get_date_str(self):
-
         # valid
         date_string = "2020-07-20"
         time_string = "23:30:00"
@@ -117,7 +114,6 @@ class Test(TestCase):
             fh.get_date_str(None)
 
     def test_get_time_str(self):
-
         # valid
         date_string = "2020-07-20"
         time_string = "23:30:00"
@@ -129,9 +125,7 @@ class Test(TestCase):
         with self.assertRaises(ValueError):
             fh.get_time_str(None)
 
-
     def test_add_minutes_to_datetime(self):
-
         # valid: adding 0 minutes must return same datetime
         start_date_string = "2020-07-20"
         start_time_string = "23:30:00"
@@ -159,7 +153,6 @@ class Test(TestCase):
             fh.add_minutes_to_datetime(start_date_time, None)
 
     def test_get_minutes(self):
-
         # valid
         self.assertEqual(fh.get_minutes(speelduur="9 min"), 9)
         self.assertEqual(fh.get_minutes(speelduur="90 min"), 90)
@@ -177,7 +170,6 @@ class Test(TestCase):
         with self.assertRaises(ValueError):
             fh.get_minutes(speelduur="")
 
-
     def test_create_event_row_full(self):
         row: List[str] = ["2020-06-29",
                           "20:30",
@@ -191,7 +183,7 @@ class Test(TestCase):
                           "https://tickets.de-fabriek.nl/fabriek/nl/flow_configs/webshop/steps/start/show/428247",
                           "https://www.de-fabriek.nl/films/290-ema.html"]
         # event_start_date,event_start_time,event_end_date,event_end_time,event_name,event_slug,post_content,location,category
-        expected = ["2020-06-29","20:30:00","2020-06-29","22:22:00",
+        expected = ["2020-06-29", "20:30:00", "2020-06-29", "22:22:00",
                     '"Ema, the movie"',
                     "\"Ema, de nieuwe film van regisseur Pablo Larraín (Jackie).\"",
                     "\"<strong>Ema, de nieuwe film van regisseur Pablo Larraín (Jackie).</strong><br><br>"
@@ -224,24 +216,45 @@ class Test(TestCase):
         with self.assertRaises(ValueError):
             fh.create_event_row(row)
 
-    def test_create_event_manager_file(self):
-        input_file = fh.openInputfile(dir="test", file_name="fabriek_sorted_test_01_OK.csv")
-        output_file = fh.openOutputfile(dir="output", file_name="fabriek_event_manager_test_01_OK.csv")
-        fh.create_event_manager_file(input_file=input_file, output_file=output_file)
+    def openTestFileForInput(self, inputFileName):
+        inputFileNamePath = os.path.join(ROOT_DIR, "tests", "resources", inputFileName)
+        return open(inputFileNamePath, encoding="utf-8")
 
+    def openTestFileForOutput(self, outputFileName):
+        outputFileNamePath = os.path.join(ROOT_DIR, "tests", "output", outputFileName)
+        return open(outputFileNamePath, mode="w", encoding="utf-8")
+
+    def test_create_event_manager_file(self):
+        input_file = self.openTestFileForInput("fabriek_sorted_test_01_OK.csv")
+        output_file = self.openTestFileForOutput("fabriek_event_manager_test_01_OK.csv")
+        fh.create_event_manager_file(input_file=input_file, output_file=output_file)
 
     def test_create_event_manager_file_invalid_no_date(self):
-        input_file = fh.openInputfile("test", "fabriek_sorted_test_02_2nd_movie_no_date.csv")
-        output_file = fh.openOutputfile("output","fabriek_event_manager_test_02_2nd_movie_no_date.csv")
+        input_file = self.openTestFileForInput("fabriek_sorted_test_02_2nd_movie_no_date.csv")
+        output_file = self.openTestFileForOutput("fabriek_event_manager_test_02_2nd_movie_no_date.csv")
         fh.create_event_manager_file(input_file=input_file, output_file=output_file)
 
-
     def test_encoding_issues_step_1_sort_file_with(self):
-        input_file = fh.openInputfile("test", "fabriek_2020-08-03_134658_01_encoding.csv")
-        output_file = fh.openOutputfile("output", "fabriek_2020-08-03_134658_01_encoding_sorted.csv")
-        fh.create_sorted_file(input_file=input_file, output_file=output_file)
+        input_file = self.openTestFileForInput("fabriek_2020-08-03_134658_01_encoding.csv")
+        output_file = self.openTestFileForOutput("fabriek_2020-08-03_134658_01_encoding_sorted.csv")
+        fh.sortCrawlOutputIntoNewFile(input_file=input_file, output_file=output_file)
 
     def test_encoding_issues_step_1_create_event_manager_file(self):
-        input_file = fh.openInputfile("test", "fabriek_2020-08-03_134658_02_encoding_sorted.csv")
-        output_file = fh.openOutputfile("output", "fabriek_2020-08-03_134658_03_encoding_event_manager.csv")
-        fh.create_sorted_file(input_file=input_file, output_file=output_file)
+        input_file = self.openTestFileForInput("fabriek_2020-08-03_134658_02_encoding_sorted.csv")
+        output_file = self.openTestFileForOutput("fabriek_2020-08-03_134658_03_encoding_event_manager.csv")
+        fh.sortCrawlOutputIntoNewFile(input_file=input_file, output_file=output_file)
+
+    # def test_web_page_one_move_yield(self):
+    #     yield scrapy.Request(url="https://www.de-fabriek.nl/films/404-the+souvenir.html", callback=fh.parse_movie,
+    #                    priority=10,
+    #                    dont_filter=True,
+    #                    cb_kwargs=dict(title="The Souvenir",
+    #                                   day="2020-08-01",
+    #                                   time="10:10",
+    #                                   ticket_url="https://www.de-fabriek.nl/films/404-the+souvenir.html/ticket",
+    #                                   movie_url="https://www.de-fabriek.nl/films/404-the+souvenir.html"))
+    #
+    # def test_web_page_one_move(self):
+    #     tests = self.test_web_page_one_move_yield()
+    #     for i in tests:
+    #         print(i)
