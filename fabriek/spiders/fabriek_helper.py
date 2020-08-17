@@ -2,12 +2,10 @@ import csv
 import io
 import os
 import re
-import time
 import unicodedata
 import datetime as dt
 from typing import List
 
-import definitions
 from definitions import OUTPUT_DIR
 
 
@@ -343,45 +341,6 @@ def open_file_for_input(inputFileName):
 def open_file_for_output(outputFileName):
     outputFileNamePath = create_filepath_for_file_in_output_dir(outputFileName)
     return open(outputFileNamePath, mode="w", encoding="utf-8")
-
-
-def parse_movie(response, title, day, time, ticket_url, movie_url):
-    title: str = response.xpath("//div[@class='hero-slide-content']/h1/text()").get()
-    language: str = get_text_from_movie(response, "Gesproken taal:")
-    genres: str = get_text_from_movie(response, "Genre:")
-    playing_time: str = get_text_from_movie(response, "Speelduur:")
-    cast: str = get_text_from_movie(response, "Cast:")
-    synopsis: str = response.xpath("//p[@class='film__synopsis__intro']/strong/text()").get()
-    content_detail1 = response.xpath("//div[@class='film__content__details__left']/p[1]").get()
-    content_detail2 = response.xpath("//div[@class='film__content__details__left']/p[2]").get()
-    content_detail3 = response.xpath("//div[@class='film__content__details__left']/p[3]").get()
-    content_detail4 = response.xpath("//div[@class='film__content__details__left']/p[4]").get()
-    content_detail5 = response.xpath("//div[@class='film__content__details__left']/p[5]").get()
-    content_detail = ""
-    content_detail
-    if content_detail1 is not None:
-        content_detail += content_detail1
-    if content_detail2 is not None:
-        content_detail += content_detail2
-    if content_detail3 is not None:
-        content_detail += content_detail3
-    if content_detail4 is not None:
-        content_detail += content_detail4
-    if content_detail5 is not None:
-        content_detail += content_detail5
-
-    yield {'datum': day,
-           'tijd': time,
-           'titel': title,
-           'taal': language,
-           'genre': genres,
-           'speelduur': playing_time,
-           'cast': cast,
-           'synopsis': synopsis,
-           'beschrijving': content_detail,
-           'ticket-url': ticket_url,
-           'film-url': movie_url
-           }
 
 
 def get_text_from_movie(response, param):

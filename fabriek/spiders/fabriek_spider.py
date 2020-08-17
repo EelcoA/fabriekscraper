@@ -3,6 +3,7 @@ from typing import List
 import scrapy
 from scrapy.spiders import CrawlSpider
 from fabriek.spiders import fabriek_helper as fh
+from fabriek.spiders.fabriek_helper import get_text_from_movie
 
 
 class FabriekSpider(CrawlSpider):
@@ -44,7 +45,7 @@ class FabriekSpider(CrawlSpider):
         i: int = 0
 
         for movie_title in movie_titles:
-            yield scrapy.Request(url=self.start_urls[0] + movie_urls[i], callback=fh.parse_movie,
+            yield scrapy.Request(url=self.start_urls[0] + movie_urls[i], callback=parse_movie,
                                  priority=10,
                                  dont_filter=True,
                                  cb_kwargs=dict(title=movie_title,
@@ -54,4 +55,40 @@ class FabriekSpider(CrawlSpider):
                                                 movie_url=self.start_urls[0] + movie_urls[i]))
             i += 1
 
+    def parse_movie(self, response, title, day, time, ticket_url, movie_url):
+        title: str = response.xpath("//div[@class='hero-slide-content']/h1/text()").get()
+        language: str = get_text_from_movie(response, "Gesproken taal:")
+        genres: str = get_text_from_movie(response, "Genre:")
+        playing_time: str = get_text_from_movie(response, "Speelduur:")
+        cast: str = get_text_from_movie(response, "Cast:")
+        synopsis: str = response.xpath("//p[@class='film__synopsis__intro']/strong/text()").get()
+        content_detail1 = response.xpath("//div[@class='film__content__details__left']/p[1]").get()
+        content_detail2 = response.xpath("//div[@class='film__content__details__left']/p[2]").get()
+        content_detail3 = response.xpath("//div[@class='film__content__details__left']/p[3]").get()
+        content_detail4 = response.xpath("//div[@class='film__content__details__left']/p[4]").get()
+        content_detail5 = response.xpath("//div[@class='film__content__details__left']/p[5]").get()
+        content_detail = ""
+        content_detail
+        if content_detail1 is not None:
+            content_detail += content_detail1
+        if content_detail2 is not None:
+            content_detail += content_detail2
+        if content_detail3 is not None:
+            content_detail += content_detail3
+        if content_detail4 is not None:
+            content_detail += content_detail4
+        if content_detail5 is not None:
+            content_detail += content_detail5
 
+        yield {'datum': day,
+               'tijd': time,
+               'titel': title,
+               'taal': language,
+               'genre': genres,
+               'speelduur': playing_time,
+               'cast': cast,
+               'synopsis': synopsis,
+               'beschrijving': content_detail,
+               'ticket-url': ticket_url,
+               'film-url': movie_url
+               }
