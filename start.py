@@ -1,3 +1,3 @@
-from fabriek.spiders import fabriek_spider_runner
+from fabriek import fabriek_runner
 
-fabriek_spider_runner.run()
+fabriek_runner.run()

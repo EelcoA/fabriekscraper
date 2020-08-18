@@ -2,8 +2,6 @@
 from typing import List
 import scrapy
 from scrapy.spiders import CrawlSpider
-from fabriek.spiders import fabriek_helper as fh
-from fabriek.spiders.fabriek_helper import get_text_from_movie
 
 
 class FabriekSpider(CrawlSpider):
@@ -45,7 +43,7 @@ class FabriekSpider(CrawlSpider):
         i: int = 0
 
         for movie_title in movie_titles:
-            yield scrapy.Request(url=self.start_urls[0] + movie_urls[i], callback=parse_movie,
+            yield scrapy.Request(url=self.start_urls[0] + movie_urls[i], callback=self.parse_movie,
                                  priority=10,
                                  dont_filter=True,
                                  cb_kwargs=dict(title=movie_title,
@@ -54,6 +52,7 @@ class FabriekSpider(CrawlSpider):
                                                 ticket_url=movie_tickets[i],
                                                 movie_url=self.start_urls[0] + movie_urls[i]))
             i += 1
+
 
     def parse_movie(self, response, title, day, time, ticket_url, movie_url):
         title: str = response.xpath("//div[@class='hero-slide-content']/h1/text()").get()
@@ -92,3 +91,10 @@ class FabriekSpider(CrawlSpider):
                'ticket-url': ticket_url,
                'film-url': movie_url
                }
+
+
+def get_text_from_movie(response, param):
+    text = response.xpath("//div[@class='film__content__meta']/p/strong[text()='" + param + "']/../text()").get()
+    if text is not None:
+        text = text.strip()
+    return text
