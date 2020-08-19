@@ -3,7 +3,7 @@
 from scrapy.crawler import CrawlerProcess
 
 from fabriek import file_handling
-from fabriek.csv_convert import sort, event_manager
+from fabriek.csv_convert import sort, event
 from fabriek.spiders.fabriek_spider import FabriekSpider
 
 
@@ -39,10 +39,16 @@ def crawl_fabriek_website_into_file(output_filepath: str):
 def sort_crawl_data(input_filename, output_filename):
     input_file_wrapper = file_handling.open_file_for_input(input_filename)
     output_file_wrapper = file_handling.open_file_for_output(output_filename)
-    sort.sort_crawl_output_into_new_file(input_file_wrapper, output_file_wrapper)
+    sort.sort_crawl_data_into_new_file(input_file_wrapper, output_file_wrapper)
+
+    print("\nBestand met gesorteerde film data: " + output_file_wrapper.name)
+
 
 
 def create_event_data_file(input_filename, output_filename):
     input_file_wrapper = file_handling.open_file_for_input(input_filename)
     output_file_wrapper = file_handling.open_file_for_output(output_filename)
-    event_manager.create_event_manager_file(input_file_wrapper, output_file_wrapper)
+    event.create_event_manager_file(input_file_wrapper, output_file_wrapper)
+
+    print("\nBestand met eventmanager data    : " + output_file_wrapper.name)
+

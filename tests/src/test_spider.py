@@ -1,12 +1,13 @@
 import os
 import unittest
+from pprint import pprint
 
-import fabriek.spiders.fabriek_spider
+import tests.src.util
 from fabriek.spiders import fabriek_spider
 from definitions import TEST_RESPONSES
-from tests.src import test_webpages_helper as helper
 
-class FabriekSpiderTest(unittest.TestCase):
+
+class SpiderTest(unittest.TestCase):
 
     def setUp(self):
         self.spider = fabriek_spider.FabriekSpider()
@@ -20,13 +21,13 @@ class FabriekSpiderTest(unittest.TestCase):
     #     self.assertEqual(count, expected_length)
 
     def test_parse(self):
-        print('in test_parse ')
-        response = helper.fake_response_from_file(os.path.join(TEST_RESPONSES, 'TheSouvenir.html'))
+        response = tests.src.util.fake_response_from_file(os.path.join(TEST_RESPONSES, 'TheSouvenir.html'))
         result = self.spider.parse_movie(response=response,
                                          title="The Souvenir",
                                          day="2020-08-01",
                                          time="10:10",
                                          ticket_url="https://www.de-fabriek.nl/films/404-the+souvenir.html/ticket",
                                          movie_url="https://www.de-fabriek.nl/films/404-the+souvenir.html")
+
         for i in result:
-            print(i)
+            pprint(i)

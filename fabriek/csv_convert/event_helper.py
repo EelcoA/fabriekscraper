@@ -1,100 +1,5 @@
-import csv
 import datetime as dt
-import io
 import re
-import unicodedata
-from typing import List
-
-from definitions import QUOTES
-
-
-def create_event_manager_file(input_file: io.IOBase, output_file: io.IOBase):
-    """
-
-    :param input_file:
-    :type output_file: object
-    """
-    writer = csv.writer(output_file, delimiter=',', quoting=csv.QUOTE_ALL)
-
-    header_row = ["event_start_date", "event_start_time", "event_end_date", "event_end_time", "event_name",
-                  "post_excerpt", "post_content", "location-slug", "category-slug"]
-    writer.writerow(header_row)
-
-    with input_file as input_file:
-        reader = csv.reader(input_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-        line_count = 0
-        for row in reader:
-            if line_count != 0:
-                try:
-                    event_row = create_event_row(row)
-                    # output_file.write(",".join(event_row) + "\n")
-                    writer.writerow(event_row)
-                except ValueError as e:
-                    msg = "Foutieve data van de website, regel " + str(line_count) + ", fout= " + str(e)
-                    #
-                    print(msg)
-                    output_file.write(msg + "\n")
-            line_count += 1
-    output_file.close()
-    print("\nBestand met eventmanager data    : " + output_file.name)
-
-    return None
-
-
-def create_event_row(row: List[str]):
-    # get all fields out of the List
-    datum = row[0]
-    tijd = row[1]
-    titel = row[2]
-    taal = row[3]
-    genre = row[4]
-    speelduur = row[5]
-    cast = row[6]
-    synopsis = row[7]
-    beschrijving = row[8]
-    ticket_url = row[9]
-    film_url = row[10]
-
-    if not is_valid_date_string(datum):
-        raise ValueError("\"datum bevat geen of geen geldige waarde: " + ("Leeg" if datum is None else datum) + "\"")
-    event_start_date = datum
-
-    if not is_valid_begintijd(tijd):
-        raise ValueError("\"tijd bevat geen, of geen geldige waarde: " + ("Leeg" if tijd is None else tijd) + "\"")
-    event_start_time = tijd + ":00"
-
-    # add 10 minutes for trailers, when no playtime found, we use zero,
-    # so that end time = start time, showing we don't know
-    try:
-        playtime_minutes = get_minutes(speelduur) + 10
-    except ValueError:
-        playtime_minutes = 0
-
-    start_date_time: dt.datetime = create_date_time(event_start_date, event_start_time)
-    end_date_time: dt.datetime = add_minutes_to_datetime(start_date_time, playtime_minutes)
-
-    event_end_date = get_date_str(end_date_time)
-    event_end_time = get_time_str(end_date_time)
-
-    event_name = titel
-    # event_slug = to_slug(titel) + "_" + datum + "_" + to_slug(tijd) -- removed, since event-manager makes its own slug
-    post_excerpt = synopsis
-    post_content = ((to_strong(synopsis) + "<br>" + "<br>") if synopsis != "" else "") + \
-                   beschrijving + "<br>" + \
-                   "<br>" + \
-                   to_strong("Gesproken taal: ") + taal + "<br>" + \
-                   to_strong("Genre: ") + genre + "<br>" + \
-                   to_strong("Speelduur: ") + speelduur + "<br>" + \
-                   to_strong("Cast: ") + cast + "<br>" + \
-                   "<br>" + \
-                   '<a href=\'' + film_url + '\'>' + film_url + '</a>'
-    location = "filmtheater-de-fabriek-2"
-    category = "film"
-
-    event_row = [event_start_date, event_start_time, event_end_date, event_end_time,
-                 event_name, post_excerpt, post_content, location, category]
-
-    return event_row
 
 
 def get_minutes(speelduur: str) -> int:
@@ -190,50 +95,6 @@ def is_pattern_matching(pattern_str: str, value: str) -> bool:
     return result
 
 
-def to_slug(titel: str):
-    """
-    Converst a string (with for example film title names in French, to a url ready version
-    :param titel:
-    :return:
-    """
-    result = titel \
-        .replace(" ", "-") \
-        .replace("--", "-") \
-        .replace("!", "") \
-        .replace("\"", "-") \
-        .replace("#", "") \
-        .replace("$", "dollar") \
-        .replace("%", "perc") \
-        .replace("&", "-and-") \
-        .replace("'", "-") \
-        .replace("(", "") \
-        .replace(")", "") \
-        .replace("*", "-") \
-        .replace("+", "-") \
-        .replace(",", "") \
-        .replace(":", "-") \
-        .replace(".", "-") \
-        .replace("/", "-") \
-        .replace("\\", "-") \
-        .replace(";", "-") \
-        .replace("<", "") \
-        .replace(">", "") \
-        .replace("?", "") \
-        .replace("@", "AT-") \
-        .replace("[", "") \
-        .replace("]", "") \
-        .replace("^", "") \
-        .replace("{", "") \
-        .replace("}", "") \
-        .replace("|", "") \
-        .replace("~", "") \
-        .replace("---", "-") \
-        .replace("--", "-") \
-        .lower()
-    result = unicodedata.normalize('NFD', result).encode('ascii', 'ignore').decode("utf-8")
-    return result
-
-
 def create_date_time(date_string: str, time_string: str) -> dt.datetime:
     """
     Create a datetime from a date-string  and a time-string
@@ -301,3 +162,21 @@ def add_minutes_to_datetime(start_date_time: dt.datetime, minutes: int) -> dt.da
 
     timedelta = dt.timedelta(minutes=minutes)
     return start_date_time + timedelta
+
+
+PATTERN_TO_CLEAN_HTML = re.compile(r'<[^>]+>')
+
+
+def clean_text_from_HTML_and_other_shit(dirty_text: str) -> str:
+    clean_text = PATTERN_TO_CLEAN_HTML.sub('', dirty_text)
+    return clean_text
+
+
+def remove_redundant_expert(description: str, excerpt: str) -> str:
+    description = description.strip()
+    excerpt = excerpt.strip()
+    start_pos = description.find(excerpt)
+    length_excerpt = len(excerpt)
+    if (start_pos == 0):
+        description = description[length_excerpt:]
+    return description.strip()

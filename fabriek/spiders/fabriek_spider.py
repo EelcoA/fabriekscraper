@@ -53,7 +53,6 @@ class FabriekSpider(CrawlSpider):
                                                 movie_url=self.start_urls[0] + movie_urls[i]))
             i += 1
 
-
     def parse_movie(self, response, title, day, time, ticket_url, movie_url):
         title: str = response.xpath("//div[@class='hero-slide-content']/h1/text()").get()
         language: str = get_text_from_movie(response, "Gesproken taal:")
@@ -61,23 +60,7 @@ class FabriekSpider(CrawlSpider):
         playing_time: str = get_text_from_movie(response, "Speelduur:")
         cast: str = get_text_from_movie(response, "Cast:")
         synopsis: str = response.xpath("//p[@class='film__synopsis__intro']/strong/text()").get()
-        content_detail1 = response.xpath("//div[@class='film__content__details__left']/p[1]").get()
-        content_detail2 = response.xpath("//div[@class='film__content__details__left']/p[2]").get()
-        content_detail3 = response.xpath("//div[@class='film__content__details__left']/p[3]").get()
-        content_detail4 = response.xpath("//div[@class='film__content__details__left']/p[4]").get()
-        content_detail5 = response.xpath("//div[@class='film__content__details__left']/p[5]").get()
-        content_detail = ""
-        content_detail
-        if content_detail1 is not None:
-            content_detail += content_detail1
-        if content_detail2 is not None:
-            content_detail += content_detail2
-        if content_detail3 is not None:
-            content_detail += content_detail3
-        if content_detail4 is not None:
-            content_detail += content_detail4
-        if content_detail5 is not None:
-            content_detail += content_detail5
+        content_detail = response.xpath("//div[@class='film__content__details__left']/p").getall()
 
         yield {'datum': day,
                'tijd': time,
