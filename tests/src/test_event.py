@@ -6,6 +6,7 @@ from tests.src import util
 
 
 class Test(TestCase):
+    maxDiff = None
 
     def test_create_event_manager_file(self):
         test_data = util.TestData(header_in, row_1_in)
@@ -46,8 +47,8 @@ row_1_out_expected = '2020-08-19,' \
                      '23:13:00,' \
                      'Berlin Alexanderplatz,' \
                      'De korte samenvatting.,' \
-                     '"<strong>De korte samenvatting.</strong><br><br>' \
-                     'Vluchteling Francis, maakt de gevaarlijke oversteek van Afrika naar Europa.<br><br>' \
+                     '"   De korte samenvatting.  <p>   Vluchteling Francis, maakt de gevaarlijke oversteek van Afrika ' \
+                     'naar Europa.<br><br>' \
                      '<strong>Gesproken taal: </strong>Duits, Engels<br>' \
                      '<strong>Genre: </strong>drama<br>' \
                      '<strong>Speelduur: </strong>183 min<br>' \

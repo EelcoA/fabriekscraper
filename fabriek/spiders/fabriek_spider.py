@@ -60,7 +60,8 @@ class FabriekSpider(CrawlSpider):
         playing_time: str = get_text_from_movie(response, "Speelduur:")
         cast: str = get_text_from_movie(response, "Cast:")
         synopsis: str = response.xpath("//p[@class='film__synopsis__intro']/strong/text()").get()
-        content_detail = response.xpath("//div[@class='film__content__details__left']/p").getall()
+        content_detail_list: List[str] = response.xpath("//div[@class='film__content__details__left']/p").getall()
+        content_detail = "".join(content_detail_list)
 
         yield {'datum': day,
                'tijd': time,

@@ -3,6 +3,7 @@ import datetime as dt
 from typing import List, IO
 
 import definitions
+import settings
 from fabriek.csv_convert import event_helper
 
 event_data_header_row = ["event_start_date", "event_start_time", "event_end_date", "event_end_time", "event_name",
@@ -41,7 +42,7 @@ def create_event_row(row: List[str]):
     speelduur = row[5]
     cast = row[6]
     synopsis = row[7]
-    beschrijving = row[8]
+    beschrijving_incl_HTML = row[8]
     ticket_url = row[9]
     film_url = row[10]
 
@@ -68,11 +69,10 @@ def create_event_row(row: List[str]):
 
     event_name = titel
     post_excerpt = event_helper.clean_text_from_HTML_and_other_shit(synopsis)
-    beschrijving_clean = event_helper.clean_text_from_HTML_and_other_shit(beschrijving)
-    if post_excerpt in beschrijving_clean:
-        beschrijving_clean = event_helper.remove_redundant_expert(beschrijving_clean, post_excerpt)
-    post_content = ((event_helper.to_strong(synopsis) + "<br>" + "<br>") if synopsis != "" else "") + \
-                   beschrijving_clean + "<br>" + \
+    # beschrijving_clean = event_helper.clean_text_from_HTML_and_other_shit(beschrijving)
+    # if post_excerpt in beschrijving_clean:
+    #     beschrijving_clean = event_helper.remove_redundant_expert(beschrijving_clean, post_excerpt)
+    post_content = beschrijving_incl_HTML + "<br>" + \
                    "<br>" + \
                    event_helper.to_strong("Gesproken taal: ") + taal + "<br>" + \
                    event_helper.to_strong("Genre: ") + genre + "<br>" + \
@@ -80,8 +80,8 @@ def create_event_row(row: List[str]):
                    event_helper.to_strong("Cast: ") + cast + "<br>" + \
                    "<br>" + \
                    '<a href=\'' + film_url + '\'>' + film_url + '</a>'
-    location = "filmtheater-de-fabriek-2"
-    category = "film"
+    location = settings.LOCATION
+    category = settings.CATEGORY
 
     event_row = [event_start_date, event_start_time, event_end_date, event_end_time,
                  event_name, post_excerpt, post_content, location, category]
