@@ -11,7 +11,6 @@ def create_filename_prefix_with_date_and_time() -> str:
 
 def create_filepath_for_file_in_output_dir(fileName: str) -> str:
     file_path: str = os.path.join(OUTPUT_DIR, fileName)
-    file_path = correct_path_for_scrapy_on_windows(file_path)
     return file_path
 
 def correct_path_for_scrapy_on_windows(file_path):
