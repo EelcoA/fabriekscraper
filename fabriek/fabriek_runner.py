@@ -23,9 +23,8 @@ def run():
 def crawl_fabriek_website(output_filename):
     output_filepath = file_handling.create_filepath_for_file_in_output_dir(output_filename)
     output_filepath = file_handling.correct_path_for_scrapy_on_windows(output_filepath)
-    print("Created filepath for output: " + output_filepath)
     crawl_fabriek_website_into_file(output_filepath=output_filepath)
-    print("\nBestand met film data            : " + output_filepath)
+    print("Bestand met film data            : " + output_filepath)
 
 
 def crawl_fabriek_website_into_file(output_filepath: str):
@@ -43,8 +42,7 @@ def sort_crawl_data(input_filename, output_filename):
     output_file_wrapper = file_handling.open_file_for_output(output_filename)
     sort.sort_crawl_data_into_new_file(input_file_wrapper, output_file_wrapper)
 
-    print("\nBestand met gesorteerde film data: " + output_file_wrapper.name)
-
+    print("Bestand met gesorteerde film data: " + output_file_wrapper.name)
 
 
 def create_event_data_file(input_filename, output_filename):
@@ -52,5 +50,4 @@ def create_event_data_file(input_filename, output_filename):
     output_file_wrapper = file_handling.open_file_for_output(output_filename)
     event.create_event_manager_file(input_file_wrapper, output_file_wrapper)
 
-    print("\nBestand met eventmanager data    : " + output_file_wrapper.name)
-
+    print("Bestand met eventmanager data    : " + output_file_wrapper.name)
