@@ -29,4 +29,5 @@ def open_file_for_input(inputFileName):
 def open_file_for_output(outputFileName):
     outputFileNamePath = create_filepath_for_file_in_output_dir(outputFileName)
     WRITE_MODE_TO_PREVENT_BLANK_LINES_ON_WINDOWS = "wb"
-    return open(outputFileNamePath, mode=WRITE_MODE_TO_PREVENT_BLANK_LINES_ON_WINDOWS, encoding="utf-8")
+    # return open(outputFileNamePath, mode=WRITE_MODE_TO_PREVENT_BLANK_LINES_ON_WINDOWS, encoding="utf-8")
+    return open(outputFileNamePath, mode=WRITE_MODE_TO_PREVENT_BLANK_LINES_ON_WINDOWS)
