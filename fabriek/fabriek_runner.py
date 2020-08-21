@@ -22,8 +22,8 @@ def run():
 
 def crawl_fabriek_website(output_filename):
     output_filepath = file_handling.create_filepath_for_file_in_output_dir(output_filename)
-    output_filepath = file_handling.correct_path_for_scrapy_on_windows(output_filepath)
-    crawl_fabriek_website_into_file(output_filepath=output_filepath)
+    corrected_output_filepath = file_handling.correct_path_for_scrapy_on_windows(output_filepath)
+    crawl_fabriek_website_into_file(output_filepath=corrected_output_filepath)
     print("Bestand met film data            : " + output_filepath)
 
 
