@@ -1,3 +1,3 @@
 # event manager
-LOCATION = "filmtheater-de-fabriek-2"
+LOCATION = "filmtheater-de-fabriek"
 CATEGORY = "film"

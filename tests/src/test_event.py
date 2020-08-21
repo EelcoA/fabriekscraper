@@ -2,6 +2,7 @@ import os
 from unittest import TestCase
 
 from fabriek.csv_convert import sort, event
+from settings import LOCATION
 from tests.src import util
 
 
@@ -56,6 +57,6 @@ row_1_out_expected = '2020-08-19,' \
                      '<br>' \
                      '<a href=\'https://www.de-fabriek.nl/films/409-berlin+alexanderplatz.html\'>' \
                         'https://www.de-fabriek.nl/films/409-berlin+alexanderplatz.html' \
-                     '</a>",' \
-                     'filmtheater-de-fabriek-2,' \
+                     '</a>",' +\
+                     LOCATION + ',' \
                      'film'

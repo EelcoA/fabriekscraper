@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List
 from unittest import TestCase
 
+import settings
 from fabriek.csv_convert import event, event_helper
 from definitions import ROOT_DIR
 from tests.src.util import open_test_file_for_input, open_test_file_for_output
@@ -186,7 +187,7 @@ class Test(TestCase):
                     "<br>"
                     "<a href=\'https://www.de-fabriek.nl/films/290-ema.html\'>"
                     "https://www.de-fabriek.nl/films/290-ema.html</a>",
-                    "filmtheater-de-fabriek-2",
+                    settings.LOCATION,
                     "film"]
         result = event.create_event_row(row)
         self.assertEqual(result, expected)
