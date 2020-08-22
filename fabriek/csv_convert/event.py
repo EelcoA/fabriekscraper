@@ -3,7 +3,7 @@ import datetime as dt
 from typing import List, IO
 
 import definitions
-import settings
+from settings import *
 from fabriek.csv_convert import event_helper
 
 event_data_header_row = ["event_start_date", "event_start_time", "event_end_date", "event_end_time", "event_name",
@@ -57,7 +57,7 @@ def create_event_row(row: List[str]):
     # add 10 minutes for trailers, when no playtime found, we use zero,
     # so that end time = start time, showing we don't know
     try:
-        playtime_minutes = event_helper.get_minutes(speelduur) + 10
+        playtime_minutes = event_helper.get_minutes(speelduur) + TRAILER_MINUTES
     except ValueError:
         playtime_minutes = 0
 
@@ -69,9 +69,6 @@ def create_event_row(row: List[str]):
 
     event_name = titel
     post_excerpt = event_helper.clean_text_from_HTML_and_other_shit(synopsis)
-    # beschrijving_clean = event_helper.clean_text_from_HTML_and_other_shit(beschrijving)
-    # if post_excerpt in beschrijving_clean:
-    #     beschrijving_clean = event_helper.remove_redundant_expert(beschrijving_clean, post_excerpt)
     post_content = beschrijving_incl_HTML + "<br>" + \
                    "<br>" + \
                    event_helper.to_strong("Gesproken taal: ") + taal + "<br>" + \
@@ -80,8 +77,8 @@ def create_event_row(row: List[str]):
                    event_helper.to_strong("Cast: ") + cast + "<br>" + \
                    "<br>" + \
                    '<a href=\'' + film_url + '\'>' + film_url + '</a>'
-    location = settings.LOCATION
-    category = settings.CATEGORY
+    location = LOCATION
+    category = CATEGORY
 
     event_row = [event_start_date, event_start_time, event_end_date, event_end_time,
                  event_name, post_excerpt, post_content, location, category]

@@ -1,7 +1,7 @@
 # Fabriek Scraper
 
-This program creates several CSV files containing all movies currently scheduled 
-on the website of art-house cinema 'De Fabriek', address http://www.de-fabriek.nl. 
+This program creates several CSV files with data from all movies currently scheduled 
+on the website of art-house cinema 'De Fabriek' in Zaandam, The Netherlands: http://www.de-fabriek.nl. 
 
 #### Dependencies
 The program is written in python3 (3.6.9) using the scrapy web crawling framework. So to use this
@@ -39,28 +39,28 @@ python3 start.py
 ```
 
 #### Output
-Output is saved in the output/ directory. Three files are created:
+Output is saved in the output directory. Three files are created:
 
 1. file with movies, with data as found on the website
-2. a file with same data, sorted on date/time
-3. a file with the data as expected by the import function for Wordpress Event Manager,
+2. file with same data, sorted on date/time
+3. file with the data as expected by the import function for Wordpress Event Manager,
 contains fields:
     - event_start_date
     - event_start_time
     - event_end_date
-    - event_end_time
+    - event_end_time (start-time + length + 'trailer-minutes' (default '10'))
     - event_name
     - event_slug
     - post_content
-    - location ('filmtheater-de-fabriek-2')
+    - location ('filmtheater-de-fabriek')
     - category ('film')
 
-last 2 values can be changed in settings.py
+The value for the last 2 fields and the 'trailer-minutes' can be set in settings.py
     
 #### Author
 - Eelco Aartsen
 - eelco@aesset.nl
-- AESSET IT - The Neteherlands
-- www.aeset.nl
+- AESSET IT - The Netherlands
+- www.aesset.nl
 
 
