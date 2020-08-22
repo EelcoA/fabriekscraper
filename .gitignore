@@ -136,3 +136,4 @@ dmypy.json
 /output/*.*
 /tests/output/*.*
 /_trial_marker
+.idea
