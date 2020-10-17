@@ -1,24 +1,14 @@
 # -*- coding: utf-8 -*-
 import sys
-
-import scrapy.crawler
+try:
+    import scrapy.crawler
+except ImportError as ie:
+    print('Scrapy kan niet geladen worden, controleer de installatie van Scrapy')
+    exit()
 
 from fabriek import file_handling
 from fabriek.csv_convert import sort, event
 from fabriek.spiders.fabriek_spider import FabriekSpider
-
-
-def scrapyIsLoaded():
-    if "scrapy.crawler" in sys.modules:
-        return True
-    else:
-        return False
-
-if not scrapyIsLoaded():
-    print('Scrapy kan niet geladen worden, controleer de installatie van Scrapy')
-    exit()
-
-
 
 def run():
     filename_prefix = file_handling.create_filename_prefix_with_date_and_time()
