@@ -39,7 +39,7 @@ class FabriekSpider(CrawlSpider):
             pass
         else:
             self.logger.error(
-                "Het verwerken van de gegevens van dag " + day + "is niet goed gegaan. Check de films van die dag!")
+                "Het verwerken van de gegevens van dag " + day + " is niet goed gegaan. Check de films van die dag!")
         i: int = 0
 
         for movie_title in movie_titles:

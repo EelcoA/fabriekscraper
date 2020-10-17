@@ -1,10 +1,23 @@
 # -*- coding: utf-8 -*-
+import sys
 
-from scrapy.crawler import CrawlerProcess
+import scrapy.crawler
 
 from fabriek import file_handling
 from fabriek.csv_convert import sort, event
 from fabriek.spiders.fabriek_spider import FabriekSpider
+
+
+def scrapyIsLoaded():
+    if "scrapy.crawler" in sys.modules:
+        return True
+    else:
+        return False
+
+if not scrapyIsLoaded():
+    print('Scrapy kan niet geladen worden, controleer de installatie van Scrapy')
+    exit()
+
 
 
 def run():
@@ -28,7 +41,7 @@ def crawl_fabriek_website(output_filename):
 
 
 def crawl_fabriek_website_into_file(output_filepath: str):
-    process = CrawlerProcess(settings={
+    process = scrapy.crawler.CrawlerProcess(settings={
         "FEEDS": {
             output_filepath: {"format": "csv"},
         }

@@ -56,6 +56,23 @@ contains fields:
     - category ('film')
 
 The value for the last 2 fields and the 'trailer-minutes' can be set in settings.py
+
+#### Errors
+A know error situation occurs when not all information can be found (e.g. no title).
+This is checked by counting the number of start times, titles, url's and ticket-buttons. 
+These should be the same. If not, an error is displayed for the user with the date where it occurs.
+No movies are added then, because it is not know which title belongs to which time etc.
+Of course I could improve this, but for the moment this is it ;-)
+
+Example error message:
+```
+ERROR: Het verwerken van de gegevens van dag 2020-11-07 is niet goed gegaan. Check de films van die dag!
+```
+This is what caused it, a movie without title:
+
+![Image](doc/Fabriek_movie_without_name_example.jpg?raw=true)
+
+How to solve this? Contact De Fabriek (075 6311993, or info@de-fabriek.nl) and make them correct it!
     
 #### Author
 - Eelco Aartsen
