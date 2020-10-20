@@ -24,20 +24,21 @@ class HeaderAndMovies():
 
 def get_header_and_movies_from(input_file) -> HeaderAndMovies:
     movie_list: List[List[str]] = []
+    line_count = 0
     with input_file as csv_file:
         csv_reader = csv.reader(csv_file,
                                 delimiter=',',
                                 quotechar='"',
                                 quoting=csv.QUOTE_MINIMAL,
                                 skipinitialspace=True)
-        line_count = 0
         for row in csv_reader:
             if line_count == 0:
                 header_row = row
             else:
                 movie_list.append(row)
             line_count += 1
-
+    if line_count == 0:
+        raise ValueError('file contains no (film) data')
     return HeaderAndMovies(header_row, movie_list)
 
 
