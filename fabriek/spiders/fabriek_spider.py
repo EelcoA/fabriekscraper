@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from typing import List
 import scrapy
-from scrapy.spiders import CrawlSpider
+import scrapy.spiders
 
 
-class FabriekSpider(CrawlSpider):
+class FabriekSpider(scrapy.spiders.CrawlSpider):
     name = 'fabriek'
     allowed_domains = ['www.de-fabriek.nl']
     start_urls = ['https://www.de-fabriek.nl']

@@ -8,7 +8,12 @@ except ImportError as ie:
 
 from fabriek import file_handling
 from fabriek.csv_convert import sort, event
-from fabriek.spiders.fabriek_spider import FabriekSpider
+try:
+    from fabriek.spiders.fabriek_spider import FabriekSpider
+except ImportError as ie:
+    print('FabriekSpider kan niet geladen worden, controleer de installatie van Scrapy')
+    exit()
+
 
 def run():
     filename_prefix = file_handling.create_filename_prefix_with_date_and_time()
