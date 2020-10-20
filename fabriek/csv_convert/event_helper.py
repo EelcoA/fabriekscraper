@@ -83,7 +83,7 @@ def is_pattern_matching(pattern_str: str, value: str) -> bool:
     """
     if value is None:
         return False
-    if value.strip() is "":
+    if value.strip() == "":
         return False
 
     pattern = re.compile(pattern_str)
