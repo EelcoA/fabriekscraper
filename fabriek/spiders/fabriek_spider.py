@@ -14,6 +14,9 @@ class FabriekSpider(CrawlSpider):
 
     def parse(self, response):
         day_urls = response.xpath("//a[@class='day-selector__day']/@href").getall()
+        if len(day_urls) == 0:
+            print(response)
+            raise ValueError('We did not receive any days from De Fabriek website')
         for day_url in day_urls:
             day = day_url[-10:]  # yyyy-mm-dd
             complete_url = self.start_urls[0] + day_url
