@@ -8,9 +8,9 @@ class FabriekSpider(CrawlSpider):
     name = 'fabriek'
     allowed_domains = ['www.de-fabriek.nl']
     start_urls = ['https://www.de-fabriek.nl']
-    custom_settings = {
-        'LOG_LEVEL': 'ERROR',
-    }
+    # custom_settings = {
+    #     'LOG_LEVEL': 'ERROR',
+    # }
 
     def parse(self, response):
         day_urls = response.xpath("//a[@class='day-selector__day']/@href").getall()
