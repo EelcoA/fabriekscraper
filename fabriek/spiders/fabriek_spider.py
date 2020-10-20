@@ -13,7 +13,7 @@ class FabriekSpider(CrawlSpider):
     }
 
     def parse(self, response):
-        self.logger.debug("in parse(self, response) ")
+        print("in parse(self, response) ")
         day_urls = response.xpath("//a[@class='day-selector__day']/@href").getall()
         if len(day_urls) == 0:
             print(response)
