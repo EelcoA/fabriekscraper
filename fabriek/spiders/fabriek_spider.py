@@ -4,7 +4,7 @@ import scrapy
 import scrapy.spiders
 
 
-class FabriekSpider(scrapy.spiders.CrawlSpider):
+class FabriekSpider(scrapy.spiders.Spider):
     name = 'fabriek'
     allowed_domains = ['www.de-fabriek.nl']
     start_urls = ['https://www.de-fabriek.nl']
@@ -13,7 +13,6 @@ class FabriekSpider(scrapy.spiders.CrawlSpider):
     }
 
     def parse(self, response):
-        print("in parse(self, response) ")
         day_urls = response.xpath("//a[@class='day-selector__day']/@href").getall()
         if len(day_urls) == 0:
             print(response)

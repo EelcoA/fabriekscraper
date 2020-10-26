@@ -36,17 +36,13 @@ def crawl_fabriek_website(output_filename):
 
 
 def crawl_fabriek_website_into_file(output_filepath: str):
-    print('crawl_fabriek_website_into_file_01')
     process = scrapy.crawler.CrawlerProcess(settings={
         "FEEDS": {
             output_filepath: {"format": "csv"},
         }
     })
-    print('crawl_fabriek_website_into_file_02')
     process.crawl(FabriekSpider)
-    print('crawl_fabriek_website_into_file_03')
     process.start()  # the script will block here until the crawling is finished
-    print('crawl_fabriek_website_into_file_04')
 
 
 def sort_crawl_data(input_filename, output_filename):
