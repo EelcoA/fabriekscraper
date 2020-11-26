@@ -45,7 +45,7 @@ row_1_in =           '2020-08-19,' \
 row_1_out_expected = '2020-08-19,' \
                      '20:00:00,' \
                      '2020-08-19,' \
-                     '23:13:00,' \
+                     '20:00:00,' \
                      'Berlin Alexanderplatz,' \
                      'De korte samenvatting.,' \
                      '"   De korte samenvatting.  <p>   Vluchteling Francis, maakt de gevaarlijke oversteek van Afrika ' \

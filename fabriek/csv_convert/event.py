@@ -54,18 +54,18 @@ def create_event_row(row: List[str]):
         raise ValueError("\"tijd bevat geen, of geen geldige waarde: " + ("Leeg" if tijd is None else tijd) + "\"")
     event_start_time = tijd + ":00"
 
-    # add 10 minutes for trailers, when no playtime found, we use zero,
-    # so that end time = start time, showing we don't know
-    try:
-        playtime_minutes = event_helper.get_minutes(speelduur) + TRAILER_MINUTES
-    except ValueError:
-        playtime_minutes = 0
-
-    start_date_time: dt.datetime = event_helper.create_date_time(event_start_date, event_start_time)
-    end_date_time: dt.datetime = event_helper.add_minutes_to_datetime(start_date_time, playtime_minutes)
-
-    event_end_date = event_helper.get_date_str(end_date_time)
-    event_end_time = event_helper.get_time_str(end_date_time)
+    # # add 10 minutes for trailers, when no playtime found, we use zero,
+    # # so that end time = start time, showing we don't know
+    # try:
+    #     playtime_minutes = event_helper.get_minutes(speelduur) + TRAILER_MINUTES
+    # except ValueError:
+    #     playtime_minutes = 0
+    #
+    # start_date_time: dt.datetime = event_helper.create_date_time(event_start_date, event_start_time)
+    # end_date_time: dt.datetime = event_helper.add_minutes_to_datetime(start_date_time, playtime_minutes)
+    #
+    # event_end_date = event_helper.get_date_str(end_date_time)
+    # event_end_time = event_helper.get_time_str(end_date_time)
 
     event_name = titel
     post_excerpt = event_helper.clean_text_from_HTML_and_other_shit(synopsis)
@@ -80,7 +80,7 @@ def create_event_row(row: List[str]):
     location = LOCATION
     category = CATEGORY
 
-    event_row = [event_start_date, event_start_time, event_end_date, event_end_time,
+    event_row = [event_start_date, event_start_time, event_start_date, event_start_time,
                  event_name, post_excerpt, post_content, location, category]
 
     return event_row

@@ -175,7 +175,7 @@ class Test(TestCase):
                           "https://tickets.de-fabriek.nl/fabriek/nl/flow_configs/webshop/steps/start/show/428247",
                           "https://www.de-fabriek.nl/films/290-ema.html"]
         # event_start_date,event_start_time,event_end_date,event_end_time,event_name,event_slug,post_content,location,category
-        expected = ["2020-06-29", "20:30:00", "2020-06-29", "22:22:00",
+        expected = ["2020-06-29", "20:30:00", "2020-06-29", "20:30:00",
                     'Ema, the movie',
                     "Ema, de nieuwe film van regisseur Pablo Larraín (Jackie).",
                     "Ema is een explosief, stijlvol en gewaagd portret van een danseres.<br>"
