@@ -7,7 +7,7 @@ except ImportError as ie:
     exit()
 
 from fabriek import file_handling
-from fabriek.csv_convert import sort, event
+from fabriek.csv_convert import sort, event, orkaan
 try:
     from fabriek.spiders.fabriek_spider import FabriekSpider
 except ImportError as ie:
@@ -18,14 +18,17 @@ except ImportError as ie:
 def run():
     filename_prefix = file_handling.create_filename_prefix_with_date_and_time()
 
-    crawl_data_fileName = filename_prefix + "_01.csv"
-    crawl_fabriek_website(output_filename=crawl_data_fileName)
+    crawl_data_filename = filename_prefix + "_01.csv"
+    crawl_fabriek_website(output_filename=crawl_data_filename)
 
     sorted_data_fileName = filename_prefix + "_02_sorted.csv"
-    sort_crawl_data(input_filename=crawl_data_fileName, output_filename=sorted_data_fileName)
+    sort_crawl_data(input_filename=crawl_data_filename, output_filename=sorted_data_fileName)
 
     event_data_filename = filename_prefix + "_03_event_manager.csv"
     create_event_data_file(sorted_data_fileName, event_data_filename)
+    
+    orkaan_agenda_filename = filename_prefix + "_04_orkaan_agenda.txt"
+    create_orkaan_agenda_file(sorted_data_fileName, orkaan_agenda_filename)
 
 
 def crawl_fabriek_website(output_filename):
@@ -59,3 +62,11 @@ def create_event_data_file(input_filename, output_filename):
     event.create_event_manager_file(input_file_wrapper, output_file_wrapper)
 
     print("Bestand met eventmanager data    : " + output_file_wrapper.name)
+
+
+def create_orkaan_agenda_file(input_filename, output_filename):
+    input_file_wrapper = file_handling.open_file_for_input(input_filename)
+    output_file_wrapper = file_handling.open_file_for_output(output_filename)
+    orkaan.create_orkaan_agenda_file(input_file_wrapper, output_file_wrapper)
+
+
