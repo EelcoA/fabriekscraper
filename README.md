@@ -17,7 +17,7 @@ An easy way to install the dependencies:
 pip3 install Scrapy
 ```
 
-#### Install on windows
+#### Install on windows (volgens mijn niet nodig, gewoon python installeren)
 ```
 1. Install Miniconda
 2. Add to path:
@@ -56,6 +56,7 @@ contains fields:
     - category ('film')
 
 The value for the last 2 fields and the 'trailer-minutes' can be set in settings.py
+4. file with film agenda text per day 
 
 #### Errors
 A know error situation occurs when not all information can be found (e.g. no title).
