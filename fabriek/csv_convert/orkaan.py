@@ -96,7 +96,7 @@ def create_orkaan_agenda_file(input_file: IO, output_file: IO):
                             output_file.write('Voor tickets en beschrijvingen, ga naar De Fabriek\n')
                         output_file.write('\n')
                         output_file.write('\n')
-                        output_file.write(f'Vandaag in De Fabriek - {datum_naar_nederlandse_tekst(event.datum)}\n')
+                        output_file.write(f'<strong>Vandaag in De Fabriek - {datum_naar_nederlandse_tekst(event.datum)}</strong>\n')
                         output_file.write('\n')
                         old_day = event.datum
                         new_day = False

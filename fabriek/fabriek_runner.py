@@ -24,8 +24,8 @@ def run():
     sorted_data_fileName = filename_prefix + "_02_sorted.csv"
     sort_crawl_data(input_filename=crawl_data_filename, output_filename=sorted_data_fileName)
 
-    event_data_filename = filename_prefix + "_03_event_manager.csv"
-    create_event_data_file(sorted_data_fileName, event_data_filename)
+    # event_data_filename = filename_prefix + "_03_event_manager.csv"
+    # create_event_data_file(sorted_data_fileName, event_data_filename)
     
     orkaan_agenda_filename = filename_prefix + "_04_orkaan_agenda.txt"
     create_orkaan_agenda_file(sorted_data_fileName, orkaan_agenda_filename)
@@ -69,4 +69,5 @@ def create_orkaan_agenda_file(input_filename, output_filename):
     output_file_wrapper = file_handling.open_file_for_output(output_filename)
     orkaan.create_orkaan_agenda_file(input_file_wrapper, output_file_wrapper)
 
+    print("Bestand met agenda voor De Orkaan: " + output_file_wrapper.name)
 
