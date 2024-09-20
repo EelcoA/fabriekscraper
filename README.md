@@ -17,6 +17,77 @@ An easy way to install the dependencies:
 pip3 install Scrapy
 ```
 
+#### Install on Mac
+
+##### Installeer een virtuele omgeving
+https://docs.python.org/3/tutorial/venv.html#tut-venv 
+
+###### Creëer een virtuele omgeving
+python -m venv tutorial-env
+
+###### Activeer de virtuele omgeving
+source tutorial-env/bin/activate
+
+###### Deactiveer de virtuele omgeving
+deactivate
+
+##### Installeer xcode (in gewone omgeving)
+Installeer xcode in de gewone terminal omgeving (niet in de virtuele omgeving)
+```
+xcode-select --install
+```
+De virtuele omgeving maakt er dan gebruik van
+
+##### Installeer homebrew
+https://brew.sh/
+
+##### Installeer git
+brew git
+
+##### Installeer python
+https://www.python.org/downloads/macos/ 
+
+##### Installeer pip
+Normaal zit dat al erin als je python installeert
+```
+python get-pip.py
+```
+
+##### Installeer de code van fabriekscraper
+```
+git clone https://github.com/EelcoA/fabriekscraper
+``` 
+Draai fabriekscraper
+```
+cd fabriekscraper
+python3 start.py
+```
+
+###### Foutmelding lzma
+Krijg je deze foutmelding: 
+builtins.ModuleNotFoundError: No module named '_lzma'
+
+oplossing https://debuglab.net/2024/05/06/modulenotfounderror-no-module-named-_lzma-when-building-python-using-pyenv-on-macos/ 
+
+Install xz (this contains liblzma library)
+```
+brew install xz
+```
+Reinstall Python specifying some necessary flags
+vraag de versie van python op
+```
+$ python  - -version (op de terminal geen spatie tussen - maar google docs maakt hier 1 streep van)
+Python 3.12.2
+```
+```
+env LDFLAGS="-L/usr/local/opt/xz/lib" CFLAGS="-I/usr/local/opt/xz/include" pyenv install <version>
+env LDFLAGS="-L/usr/local/opt/xz/lib" CFLAGS="-I/usr/local/opt/xz/include" pyenv install 3.12.2 
+```
+probeer het nu weer te doen
+
+
+
+
 #### Install on windows (volgens mijn niet nodig, gewoon python installeren)
 ```
 1. Install Miniconda
